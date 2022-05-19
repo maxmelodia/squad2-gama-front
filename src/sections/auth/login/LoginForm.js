@@ -2,13 +2,13 @@ import * as Yup from 'yup';
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
+import { Auth } from 'aws-amplify';
 // material
-import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel } from '@mui/material';
+import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel} from '@mui/material';
+
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
-
-// ----------------------------------------------------------------------
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -16,9 +16,10 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().email('Email must be a valid email address').required('Email is required'),
+    email: Yup.string().required('Usuário é obrigatório'),
     password: Yup.string().required('Password is required'),
   });
+
 
   const formik = useFormik({
     initialValues: {
@@ -27,8 +28,28 @@ export default function LoginForm() {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+    onSubmit: (value) => {
+
+
+      Auth.signIn({
+        username: value.email,
+        password: value.password
+      })
+        .then(() => {
+          Auth.currentSession()
+            .then(userSession => {
+              const token = userSession.idToken.jwtToken;
+              navigate('/dashboard', { replace: true });
+              console.log(token);
+            })
+            .catch((err) => {
+              console.log(err);
+              navigate('/', { replace: true });
+            });
+        })
+        .catch((err) => {
+          navigate('/', { replace: true });
+        });
     },
   });
 
@@ -86,6 +107,7 @@ export default function LoginForm() {
         <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
           Login
         </LoadingButton>
+
       </Form>
     </FormikProvider>
   );
