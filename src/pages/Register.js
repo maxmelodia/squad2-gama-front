@@ -67,9 +67,9 @@ export default function Register() {
           <Logo />
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Você já tem uma conta? {''}
+              Já tem uma conta? {''}
               <Link variant="subtitle2" component={RouterLink} to="/login">
-                Faça seu Login
+                 Faça seu Login
               </Link>
             </Typography>
           )}
@@ -90,7 +90,7 @@ export default function Register() {
               Faça seu cadastro gratuitamente.
             </Typography>
 
-            <Typography sx={{ color: 'text.secondary', mb: 5 }}>Não precisa inserir cartão de crédito.</Typography>
+            <Typography sx={{ color: 'text.secondary', mb: 5 }}>É simples e rápido.</Typography>
 
             <RegisterForm />
 

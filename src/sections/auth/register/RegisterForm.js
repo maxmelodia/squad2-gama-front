@@ -4,7 +4,7 @@ import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 // material
-import { Stack, TextField, IconButton, InputAdornment, Button, Divider } from '@mui/material';
+import { Stack, TextField, IconButton, InputAdornment, Button, Divider, Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../../../components/Iconify';
@@ -15,7 +15,7 @@ export default function RegisterForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [codigoVerificacao, setCodigoVerificacao] = useState(false);
+  const [codigoVerificacao, setCodigoVerificacao] = useState(true);
 
   async function signUp(username, password, email) {
       try {
@@ -75,7 +75,7 @@ export default function RegisterForm() {
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               fullWidth
-              label="Nome"
+              label="Usuário"
               {...getFieldProps('firstName')}
               error={Boolean(touched.firstName && errors.firstName)}
               helperText={touched.firstName && errors.firstName}
@@ -123,7 +123,8 @@ export default function RegisterForm() {
         <>
           <Stack sx={{marginTop:'30px'}} spacing={3}>
               <Divider />
-              <Stack direction={{ xs: 'column', sm: 'row', alignItems: 'center', justifyContent:"center", direction:"row"}} spacing={2}>
+              <Typography sx={{ color: 'text.secondary', mb: 5 }}>Informe o código de vericação recebido no seu e-mail.</Typography>
+              <Stack direction={{ xs: 'column', sm: 'row', alignItems: 'center', justifyContent:"center", direction:"row"}} spacing={1}>
                 <TextField
                   fullWidth
                   label="Código de verificação"

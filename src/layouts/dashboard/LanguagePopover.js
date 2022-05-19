@@ -23,6 +23,12 @@ const LANGS = [
     label: 'French',
     icon: '/static/icons/ic_flag_fr.svg',
   },
+  {
+    value: 'br',
+    label: 'Brasil',
+    icon: '/static/icons/ic_flag_br.svg',
+  },  
+  
 ];
 
 // ----------------------------------------------------------------------
@@ -53,7 +59,7 @@ export default function LanguagePopover() {
           }),
         }}
       >
-        <img src={LANGS[0].icon} alt={LANGS[0].label} />
+        <img src={LANGS[3].icon} alt={LANGS[3].label} />
       </IconButton>
 
       <MenuPopover

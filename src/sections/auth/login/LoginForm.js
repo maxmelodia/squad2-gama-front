@@ -29,8 +29,6 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: (value) => {
-
-
       Auth.signIn({
         username: value.email,
         password: value.password
