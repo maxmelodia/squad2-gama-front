@@ -15,7 +15,7 @@ export default function RegisterForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [codigoVerificacao, setCodigoVerificacao] = useState(true);
+  const [codigoVerificacao, setCodigoVerificacao] = useState(false);
 
   async function signUp(username, password, email) {
       try {
