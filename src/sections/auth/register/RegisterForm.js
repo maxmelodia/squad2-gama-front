@@ -34,8 +34,8 @@ export default function RegisterForm() {
   }
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Nome obrigatório'),
-    email: Yup.string().email('Email must be a valid email address').required('Email obrigatório'),
+    firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
+    email: Yup.string().email('Email deve ser válido').required('Email obrigatório'),
     password: Yup.string().required('Senha obrigatório'),
   });
 
