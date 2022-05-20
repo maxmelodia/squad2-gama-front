@@ -17,22 +17,6 @@ export default function Perfil() {
   const [showPassword, setShowPassword] = useState(false);
   const [codigoVerificacao, setCodigoVerificacao] = useState(false);
 
-  async function signUp(username, password, email) {
-      try {
-          const { user } = await Auth.signUp({
-            username,
-            password,
-            attributes: {
-                email,
-                name: username,
-            }
-          });
-          setCodigoVerificacao(true);
-      } catch (error) {
-          console.log('error signing up:', error);
-      }
-  }
-
   const RegisterSchema = Yup.object().shape({
     firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
     email: Yup.string().email('Email deve ser válido').required('Email obrigatório'),
@@ -48,7 +32,7 @@ export default function Perfil() {
     },
     validationSchema: RegisterSchema,
     onSubmit: (values) => {
-      signUp(values.firstName, values.password, values.email);
+      
     },
   });
 
@@ -116,7 +100,6 @@ export default function Perfil() {
           </LoadingButton>
         </Stack>
       </Form>
-
 
       {
         codigoVerificacao &&

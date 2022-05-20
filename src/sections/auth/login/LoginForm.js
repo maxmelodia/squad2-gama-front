@@ -38,30 +38,17 @@ export default function LoginForm() {
           Auth.currentSession()
             .then(async (userSession) => {
               const token = userSession.idToken.jwtToken;
-
-              console.log('line42',token);
-
               localStorage.setItem('squad2UserToken', JSON.stringify(token));
-              //navigate('/dashboard', { replace: true });
               let decoded = jwt_decode(token);
               let squad2User =  { token, decoded }
-
-              console.log('line49',squad2User);
 
               await api().get(`/usuario/${decoded.sub}`)
               .then((response) => {
                 squad2User.user = response.data.result;
                 localStorage.setItem('squad2User', JSON.stringify(squad2User));
-
-                console.log('line56',squad2User);
-
                 navigate('/dashboard', { replace: true });
-
               })
               .catch((error) => {
-
-                console.log('line61',error);
-
                 navigate('/', { replace: true });                
                 console.log(error.message);
               });                          
