@@ -8,6 +8,8 @@ import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../components/Iconify';
 import DateCustom from '../components/DateCustom';
+import CustomizedSnackbars from '../components/CustomizedSnackbars';
+
 import ImageUploading from "react-images-uploading";
 import UserContext from '../contexts/user-context';
 import api from '../services/api';
@@ -45,18 +47,46 @@ export default function Perfil() {
     initialValues: usuario,
     validationSchema: RegisterSchema,
     onSubmit: (values, { setSubmitting }) => {
+      atualizarPerfil(values);
       setSubmitting(false)
     },
   });
 
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
+  
+  const  atualizarPerfil = async (values) => {
+
+    const usuarioUpdate = {
+      id: values.id,
+      data_nascimento: values.data_nascimento,
+      cpf: values.cpf,
+      cidade: values.cidade,
+      foto: values.foto,
+      telefone: values.telefone
+    };    
+
+    await api(dataUser.token).put(`/usuario`, usuarioUpdate)
+    .then(() => { 
+        if (dataUser.user[0].foto !== values.foto) {
+          dataUser.user[0].foto = values.foto;
+        };
+        handleClickAlert('success','Usuário atualizado com sucesso!');
+      })
+    .catch((error) => {
+      console.log(error);
+    });  
+  };
+
 
   useEffect(() => {
     (async () => {
         await api(dataUser.token).get(`/usuario/${dataUser.decoded.sub}`)
           .then(response => { 
-              setImages([{data_url: response.data.result[0].foto}]);
+              if (response.data.result[0].foto !== "") {
+                setImages([{data_url: response.data.result[0].foto}]);
+              }
               setUsuario(response.data.result[0]); 
+              //console.log(response.data.result[0]);
               formik.setValues(response.data.result[0]);            
             })
           .catch((error) => {
@@ -65,8 +95,31 @@ export default function Perfil() {
     })();  
   }, []);
   
+  const [open, setOpen] = useState(false);
+  const [severity,setSeverity] = useState('success');
+  const [message,setMessage] = useState('');
+  const handleClickAlert = (s, m) => {
+    setSeverity(s);
+    setMessage(m);
+    setOpen(true);
+  };
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };  
+
   return (
     <FormikProvider value={formik}>
+      <CustomizedSnackbars
+        open={open}
+        openAlert={true}
+        severity={severity}
+        message={message}
+        handleClick={handleClickAlert}
+        handleClose={handleCloseAlert}
+      />
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Divider/>
         <div className="App">
@@ -76,6 +129,8 @@ export default function Perfil() {
             onChange={onChange}
             maxNumber={maxNumber}
             dataURLKey="data_url"
+            imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+            maxFileSize={50000} 
           >
             {({
               imageList,
@@ -84,11 +139,19 @@ export default function Perfil() {
               onImageUpdate,
               onImageRemove,
               isDragging,
-              dragProps
-            }) => (
+              dragProps,
+              errors 
+            }) => { 
+              
+              if (errors && errors.maxFileSize === true){
+                handleClickAlert('error','Tamanho máximo de imagem 50kb') 
+              }
+              
+              return (
               // write your building UI
               <div className="upload__image-wrapper">
-                { imageList.length === 0 &&
+                { 
+                  imageList.length === 0 &&
                   <Button fullWidth size="medium" type="button" variant="contained" color="success" onClick={onImageUpload} >
                     Adicione sua foto
                   </Button>
@@ -114,7 +177,7 @@ export default function Perfil() {
                   </div>
                 )})}
               </div>
-            )}
+            )}}
           </ImageUploading>
         </div>
 

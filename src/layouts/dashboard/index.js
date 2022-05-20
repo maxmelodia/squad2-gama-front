@@ -33,7 +33,7 @@ const MainStyle = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout() {
-  const dataUser = localStorage.getItem('squad2User') ? JSON.parse(localStorage.getItem('squad2User')) : { username: 'O' };
+  let dataUser = localStorage.getItem('squad2User') ? JSON.parse(localStorage.getItem('squad2User')) : { username: 'O' };
   const [open, setOpen] = useState(false);
 
   return (
