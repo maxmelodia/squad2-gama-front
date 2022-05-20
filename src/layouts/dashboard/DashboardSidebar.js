@@ -15,6 +15,7 @@ import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
 import UserContext from '../../contexts/user-context';
+import Iconify from '../../components/Iconify';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -71,12 +72,18 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
             <Avatar src={dataUser.user[0].foto} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
+
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
+                <Iconify
+                  icon={'eva:briefcase-fill'}
+                  sx={{ width: 16, height: 16, mr: 1, mt: 1 }}
+                />        
+
                 {/* {account.displayName} */}
-                {dataUser.decoded.name}
+                {dataUser.user[0].nome}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {account.role}
+                {dataUser.user[0].cidade}
               </Typography>
             </Box>
           </AccountStyle>

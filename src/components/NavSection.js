@@ -37,10 +37,13 @@ NavItem.propTypes = {
 function NavItem({ item, active }) {
   const theme = useTheme();
 
-  const isActiveRoot = active(item.path);
+  let isActiveRoot = active(item.path);
+  if (item.path === '/') {
+    isActiveRoot = false;    
+  }
 
   const { title, path, icon, info, children } = item;
-
+  
   const [open, setOpen] = useState(isActiveRoot);
 
   const handleOpen = () => {

@@ -27,7 +27,11 @@ export default function DashboardApp() {
     <Page title="Dashboard">
       <Container maxWidth="xl">
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Bem Vindo...
+          <Iconify
+              icon={'eva:globe-outline'}
+              sx={{ width: 22, height: 22, ml: 1 }}
+          />        
+         &nbsp;  Bem Vindo Viajantes...
         </Typography>
 
         {/* <Grid container spacing={3}>
