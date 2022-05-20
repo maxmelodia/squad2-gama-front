@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -6,7 +6,6 @@ import { styled } from '@mui/material/styles';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 import UserContext from '../../contexts/user-context';
-import api from '../../services/api';
 // ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;

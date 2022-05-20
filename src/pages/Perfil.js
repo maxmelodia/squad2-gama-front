@@ -1,31 +1,29 @@
 import * as Yup from 'yup';
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { Auth } from 'aws-amplify';
 // material
-import { Stack, TextField, IconButton, InputAdornment, Button, Divider, Typography } from '@mui/material';
+import { Stack, TextField, IconButton, Button, Divider, Typography, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../components/Iconify';
+import DateCustom from '../components/DateCustom';
 import ImageUploading from "react-images-uploading";
-
+import UserContext from '../contexts/user-context';
+import api from '../services/api';
 
 // ----------------------------------------------------------------------
 
 export default function Perfil() {
+  const { dataUser } = useContext(UserContext);
+
   const [images, setImages] = useState([]);
   const maxNumber = 1;
   const onChange = (imageList, addUpdateIndex) => {
-    // data for submit
-    console.log(imageList, addUpdateIndex);
     setImages(imageList);
   };
 
   const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [codigoVerificacao, setCodigoVerificacao] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
     // firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
@@ -33,41 +31,44 @@ export default function Perfil() {
     // password: Yup.string().required('Senha obrigatório'),
   });
 
+  const [usuario, setUsuario] = useState({
+    nome: '', 
+    email: '',
+    data_nascimento: null,
+    cpf: '',
+    cidade: '',
+    foto: '',
+    telefone: ''
+  })
+
   const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      email: '',
-      password: '',
-      codigoVerificacao:'',
-      foto: ''
-    },
+    initialValues: usuario,
     validationSchema: RegisterSchema,
     onSubmit: (values, { setSubmitting }) => {
-
-      console.log('aaaaaaaaaaaaaaaaaa',values);      
       setSubmitting(false)
     },
   });
 
-  async function confirmSignUp() {
-    try {
-      const validate = await Auth.confirmSignUp(formik.values.firstName, formik.values.codigoVerificacao);
-      setCodigoVerificacao(false);
-      formik.values.firstName = '';
-      formik.values.email = '';
-      formik.values.password = '';
-      formik.values.codigoVerificacao = '';
-      navigate('/', { replace: true });
-    } catch (error) {
-        console.log('error confirming sign up', error);
-    }
-  }
-
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
+  useEffect(() => {
+    (async () => {
+        await api(dataUser.token).get(`/usuario/${dataUser.decoded.sub}`)
+          .then(response => { 
+              setImages([{data_url: response.data.result[0].foto}]);
+              setUsuario(response.data.result[0]); 
+              formik.setValues(response.data.result[0]);            
+            })
+          .catch((error) => {
+            console.log(error);
+          });  
+    })();  
+  }, []);
+  
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+        <Divider/>
         <div className="App">
           <ImageUploading
             multiple
@@ -101,13 +102,13 @@ export default function Perfil() {
                     <img src={image.data_url} alt="" width="150" />
                     <div className="image-item__btn-wrapper">
                     <IconButton edge="end" onClick={() => onImageUpdate(index)}>
-                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:refresh-fill'} />
+                        <Iconify icon={'eva:refresh-fill'} />
                     </IconButton>                 
                     <IconButton edge="end" onClick={() => {
                       formik.values.foto = '';
                       onImageRemove(index);
                       }}>
-                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:trash-2-outline'} />
+                        <Iconify icon={'eva:trash-2-outline'} />
                     </IconButton>                 
                     </div>
                   </div>
@@ -118,70 +119,102 @@ export default function Perfil() {
         </div>
 
         <Stack spacing={3}>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        <Divider/>
+
+        <Grid container spacing={2}>
+          <Grid item sm={12} md={6} lg={6}>
+            <TextField
+                fullWidth
+                label="Nome"
+                {...getFieldProps('nome')}
+                error={Boolean(touched.firstName && errors.firstName)}
+                helperText={touched.firstName && errors.firstName}
+              />
+          </Grid> 
+          <Grid item sm={12} md={6} lg={6}>
+            <TextField
+              disabled
+              fullWidth
+              label="email"
+              {...getFieldProps('email')}
+              error={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
+            />
+          </Grid> 
+
+          <Grid item sm={12} md={4} lg={2}>
+            <DateCustom
+              required
+              fullWidth
+              helperText={
+                formik.touched.data_nascimento && formik.errors.data_nascimento
+              }
+              error={
+                formik.touched.data_nascimento &&
+                Boolean(formik.errors.data_nascimento)
+              }
+              label="Data Nascimento"
+              name="data_nascimento"
+              value={formik.values.data_nascimento}
+              onChange={(date) =>
+                formik.setFieldValue("data_nascimento", date)
+              }
+            />
+          </Grid>
+          <Grid item sm={12} md={4} lg={2}>
             <TextField
               fullWidth
-              label="Usuário"
-              {...getFieldProps('firstName')}
-              error={Boolean(touched.firstName && errors.firstName)}
-              helperText={touched.firstName && errors.firstName}
+              label="CPF"
+              {...getFieldProps('cpf')}
+              error={Boolean(touched.cpf && errors.cpf)}
+              helperText={touched.cpf && errors.cpf}
             />
-          </Stack>
+          </Grid> 
+          <Grid item sm={12} md={4} lg={2}>
+            <TextField
+              fullWidth
+              label="Telefone"
+              {...getFieldProps('telefone')}
+              error={Boolean(touched.telefone && errors.telefone)}
+              helperText={touched.telefone && errors.telefone}
+            />
+          </Grid>           
 
-          <TextField
-            fullWidth
-            autoComplete="username"
-            type="email"
-            label="Email"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
-          />
 
-          <TextField
-            fullWidth
-            autoComplete="current-password"
-            type={showPassword ? 'text' : 'password'}
-            label="Senha"
-            {...getFieldProps('password')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end" onClick={() => setShowPassword((prev) => !prev)}>
-                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
-          />
+          <Grid item sm={12} md={12} lg={6}>
+            <TextField
+              fullWidth
+              label="Cidade"
+              {...getFieldProps('cidade')}
+              error={Boolean(touched.cidade && errors.cidade)}
+              helperText={touched.cidade && errors.cidade}
+            />
+          </Grid>  
 
-          <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-            Cadastrar
-          </LoadingButton>
+          <Grid item sm={12} md={12} lg={12}>
+            <TextField
+              multiline
+              maxRows={10}            
+              fullWidth
+              label="Descrição/Bio"
+              {...getFieldProps('descricao')}
+              error={Boolean(touched.descricao && errors.descricao)}
+              helperText={touched.descricao && errors.descricao}
+            />
+          </Grid>                      
+        </Grid> 
+
+        <Divider/>
+        <Grid container spacing={2}>
+          <Grid item sm={12} md={6} lg={2}>
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+              Atualizar Cadastro
+            </LoadingButton>
+          </Grid>                      
+        </Grid> 
+
         </Stack>
       </Form>
-
-      {
-        codigoVerificacao &&
-        <>
-          <Stack sx={{marginTop:'30px'}} spacing={3}>
-              <Divider />
-              <Typography sx={{ color: 'text.secondary', mb: 5 }}>Informe o código de vericação recebido no seu e-mail.</Typography>
-              <Stack direction={{ xs: 'column', sm: 'row', alignItems: 'center', justifyContent:"center", direction:"row"}} spacing={1}>
-                <TextField
-                  fullWidth
-                  label="Código de verificação"
-                  {...getFieldProps('codigoVerificacao')}
-                />
-                <Button fullWidth size="medium" type="button" variant="contained" color="success" onClick={confirmSignUp} >
-                  Validar
-                </Button>
-              </Stack>
-          </Stack>
-        </>
-      }      
 
     </FormikProvider>
   );
