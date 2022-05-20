@@ -8,19 +8,29 @@ import { Stack, TextField, IconButton, InputAdornment, Button, Divider, Typograp
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../components/Iconify';
+import ImageUploading from "react-images-uploading";
+
 
 // ----------------------------------------------------------------------
 
 export default function Perfil() {
+  const [images, setImages] = useState([]);
+  const maxNumber = 1;
+  const onChange = (imageList, addUpdateIndex) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
+
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [codigoVerificacao, setCodigoVerificacao] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
-    email: Yup.string().email('Email deve ser válido').required('Email obrigatório'),
-    password: Yup.string().required('Senha obrigatório'),
+    // firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
+    // email: Yup.string().email('Email deve ser válido').required('Email obrigatório'),
+    // password: Yup.string().required('Senha obrigatório'),
   });
 
   const formik = useFormik({
@@ -28,11 +38,14 @@ export default function Perfil() {
       firstName: '',
       email: '',
       password: '',
-      codigoVerificacao:''
+      codigoVerificacao:'',
+      foto: ''
     },
     validationSchema: RegisterSchema,
-    onSubmit: (values) => {
-      
+    onSubmit: (values, { setSubmitting }) => {
+
+      console.log('aaaaaaaaaaaaaaaaaa',values);      
+      setSubmitting(false)
     },
   });
 
@@ -55,6 +68,55 @@ export default function Perfil() {
   return (
     <FormikProvider value={formik}>
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+        <div className="App">
+          <ImageUploading
+            multiple
+            value={images}
+            onChange={onChange}
+            maxNumber={maxNumber}
+            dataURLKey="data_url"
+          >
+            {({
+              imageList,
+              onImageUpload,
+              onImageRemoveAll,
+              onImageUpdate,
+              onImageRemove,
+              isDragging,
+              dragProps
+            }) => (
+              // write your building UI
+              <div className="upload__image-wrapper">
+                { imageList.length === 0 &&
+                  <Button fullWidth size="medium" type="button" variant="contained" color="success" onClick={onImageUpload} >
+                    Adicione sua foto
+                  </Button>
+                }
+
+                &nbsp;
+                {imageList.map((image, index) => {
+                  formik.values.foto = image.data_url;
+                  return (
+                  <div key={index} className="image-item">
+                    <img src={image.data_url} alt="" width="150" />
+                    <div className="image-item__btn-wrapper">
+                    <IconButton edge="end" onClick={() => onImageUpdate(index)}>
+                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:refresh-fill'} />
+                    </IconButton>                 
+                    <IconButton edge="end" onClick={() => {
+                      formik.values.foto = '';
+                      onImageRemove(index);
+                      }}>
+                        <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:trash-2-outline'} />
+                    </IconButton>                 
+                    </div>
+                  </div>
+                )})}
+              </div>
+            )}
+          </ImageUploading>
+        </div>
+
         <Stack spacing={3}>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
