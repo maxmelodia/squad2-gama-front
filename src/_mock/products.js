@@ -4,7 +4,10 @@ import { sample } from 'lodash';
 // ----------------------------------------------------------------------
 
 const PRODUCT_NAME = [
-  'Nike Air Force 1 NDESTRUKT',
+  //'Nike Air Force 1 NDESTRUKT',
+  'Patrícia Castro Nunes',
+  'João Pedro Sakamoto',
+  'Larissa Riquelme',
   'Nike Space Hippie 04',
   'Nike Air Zoom Pegasus 37 A.I.R. Chaz Bear',
   'Nike Blazer Low 77 Vintage',
@@ -33,14 +36,17 @@ const PRODUCT_COLOR = ['#00AB55', '#000000', '#FFFFFF', '#FFC0CB', '#FF4842', '#
 
 // ----------------------------------------------------------------------
 
-const products = [...Array(24)].map((_, index) => {
+//const products = [...Array(24)].map((_, index) => {
+const products = [...Array(3)].map((_, index) => {
   const setIndex = index + 1;
 
   return {
     id: faker.datatype.uuid(),
-    cover: `/static/mock-images/products/product_${setIndex}.jpg`,
+    //cover: `/static/mock-images/products/product_${setIndex}.jpg`,
+    cover: `/static/mock-images/pessoas/pessoa_${setIndex}.jpg`,
     name: PRODUCT_NAME[index],
-    price: faker.datatype.number({ min: 4, max: 99, precision: 0.01 }),
+    //price: faker.datatype.number({ min: 4, max: 99, precision: 0.01 }),
+    price: 'Maio/2023',
     priceSale: setIndex % 3 ? null : faker.datatype.number({ min: 19, max: 29, precision: 0.01 }),
     colors:
       (setIndex === 1 && PRODUCT_COLOR.slice(0, 2)) ||
@@ -50,7 +56,8 @@ const products = [...Array(24)].map((_, index) => {
       (setIndex === 23 && PRODUCT_COLOR.slice(4, 6)) ||
       (setIndex === 24 && PRODUCT_COLOR.slice(5, 6)) ||
       PRODUCT_COLOR,
-    status: sample(['sale', 'new', '', '']),
+    status: sample(['Novo']),
+    //status: sample(['sale', 'new', '', '']),
   };
 });
 

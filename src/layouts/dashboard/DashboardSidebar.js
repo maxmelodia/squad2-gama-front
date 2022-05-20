@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 // material
 import { styled } from '@mui/material/styles';
@@ -14,7 +14,7 @@ import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
 import navConfig from './NavConfig';
-
+import UserContext from '../../contexts/user-context';
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
@@ -43,8 +43,9 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-
   const isDesktop = useResponsive('up', 'lg');
+  const { dataUser } = useContext(UserContext);
+  //console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbb',dataUser.user[0].foto);
 
   useEffect(() => {
     if (isOpenSidebar) {
@@ -66,10 +67,13 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={account.photoURL} alt="photoURL" />
+            {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
+            <Avatar src={dataUser.user[0].foto} alt="photoURL" />
+
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {/* {account.displayName} */}
+                {dataUser.decoded.name}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {account.role}

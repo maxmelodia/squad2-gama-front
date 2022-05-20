@@ -133,7 +133,8 @@ export default function BlogPostCard({ post, index }) {
           }}
         >
           <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-            {fDate(createdAt)}
+            {/* {fDate(createdAt)} */}
+            {createdAt}
           </Typography>
 
           <TitleStyle
@@ -151,7 +152,7 @@ export default function BlogPostCard({ post, index }) {
           >
             {title}
           </TitleStyle>
-
+{/* 
           <InfoStyle>
             {POST_INFO.map((info, index) => (
               <Box
@@ -169,7 +170,7 @@ export default function BlogPostCard({ post, index }) {
                 <Typography variant="caption">{fShortenNumber(info.number)}</Typography>
               </Box>
             ))}
-          </InfoStyle>
+          </InfoStyle> */}
         </CardContent>
       </Card>
     </Grid>

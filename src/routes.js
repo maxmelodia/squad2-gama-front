@@ -4,6 +4,7 @@ import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Blog from './pages/Blog';
+import Perfil from './pages/Perfil';
 import User from './pages/User';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
@@ -21,6 +22,7 @@ export default function Router() {
       children: [
         { path: 'app', element: <DashboardApp /> },
         { path: 'user', element: <User /> },
+        { path: 'perfil', element: <Perfil /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },
       ],

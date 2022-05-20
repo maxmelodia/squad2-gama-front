@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { Auth } from 'aws-amplify';
+import jwt_decode from "jwt-decode";
+import api from '../../../services/api';
 // material
 import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel} from '@mui/material';
 
@@ -14,7 +16,6 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-
   const LoginSchema = Yup.object().shape({
     email: Yup.string().required('Usuário é obrigatório'),
     password: Yup.string().required('Password é obrigatório'),
@@ -28,17 +29,27 @@ export default function LoginForm() {
       remember: true,
     },
     validationSchema: LoginSchema,
-    onSubmit: (value) => {
-      Auth.signIn({
+    onSubmit: async (value) => {
+      await Auth.signIn({
         username: value.email,
         password: value.password
       })
         .then(() => {
           Auth.currentSession()
-            .then(userSession => {
+            .then(async (userSession) => {
               const token = userSession.idToken.jwtToken;
               navigate('/dashboard', { replace: true });
-              console.log(token);
+              let decoded = jwt_decode(token);
+              let squad2User =  { token, decoded }
+
+              await api().get(`/usuario/${decoded.sub}`)
+              .then((response) => {
+                squad2User.user = response.data.result;
+                localStorage.setItem('squad2User', JSON.stringify(squad2User));
+              })
+              .catch((error) => {
+                console.log(error.message);
+              });                          
             })
             .catch((err) => {
               console.log(err);
@@ -58,55 +69,55 @@ export default function LoginForm() {
   };
 
   return (
-    <FormikProvider value={formik}>
-      <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
-        <Stack spacing={3}>
-          <TextField
-            fullWidth
-            autoComplete="username"
-            type="email"
-            label="Usuário"
-            {...getFieldProps('email')}
-            error={Boolean(touched.email && errors.email)}
-            helperText={touched.email && errors.email}
-          />
+      <FormikProvider value={formik}>
+        <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
+          <Stack spacing={3}>
+            <TextField
+              fullWidth
+              autoComplete="username"
+              type="email"
+              label="Usuário"
+              {...getFieldProps('email')}
+              error={Boolean(touched.email && errors.email)}
+              helperText={touched.email && errors.email}
+            />
 
-          <TextField
-            fullWidth
-            autoComplete="current-password"
-            type={showPassword ? 'text' : 'password'}
-            label="Senha"
-            {...getFieldProps('password')}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleShowPassword} edge="end">
-                    <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            error={Boolean(touched.password && errors.password)}
-            helperText={touched.password && errors.password}
-          />
-        </Stack>
+            <TextField
+              fullWidth
+              autoComplete="current-password"
+              type={showPassword ? 'text' : 'password'}
+              label="Senha"
+              {...getFieldProps('password')}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              error={Boolean(touched.password && errors.password)}
+              helperText={touched.password && errors.password}
+            />
+          </Stack>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          <FormControlLabel
-            control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-            label="Lembrar"
-          />
+          <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
+            <FormControlLabel
+              control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
+              label="Lembrar"
+            />
 
-          <Link component={RouterLink} variant="subtitle2" to="#" underline="hover">
-            Esqueceu a senha?
-          </Link>
-        </Stack>
+            <Link component={RouterLink} variant="subtitle2" to="#" underline="hover">
+              Esqueceu a senha?
+            </Link>
+          </Stack>
 
-        <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
-          Login
-        </LoadingButton>
+          <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
+            Login
+          </LoadingButton>
 
-      </Form>
-    </FormikProvider>
+        </Form>
+      </FormikProvider>
   );
 }
