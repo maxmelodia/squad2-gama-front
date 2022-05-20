@@ -42,7 +42,7 @@ export default function LoginForm() {
               console.log('line42',token);
 
               localStorage.setItem('squad2UserToken', JSON.stringify(token));
-              navigate('/dashboard', { replace: true });
+              //navigate('/dashboard', { replace: true });
               let decoded = jwt_decode(token);
               let squad2User =  { token, decoded }
 
@@ -55,11 +55,14 @@ export default function LoginForm() {
 
                 console.log('line56',squad2User);
 
+                navigate('/dashboard', { replace: true });
+
               })
               .catch((error) => {
 
                 console.log('line61',error);
 
+                navigate('/', { replace: true });                
                 console.log(error.message);
               });                          
             })
