@@ -1,15 +1,16 @@
 import axios from "axios";
 
 function getTokenLocalStorage(){
-  const s = localStorage.getItem('tokenUser') ? JSON.parse(localStorage.getItem('tokenUser')) : { username: 'O' };
-  return s.token;
+  const s = localStorage.getItem('squad2UserToken') ? JSON.parse(localStorage.getItem('squad2UserToken')) : { username: 'O' };
+  return s;
 }
 
 const api = function () {
- const token = getTokenLocalStorage();
+ const token = getTokenLocalStorage(); 
   const req = axios.create({
-    baseURL: `http://api.squad2.tech:3000/api/v1/public/`,
+    //baseURL: `http://api.squad2.tech:3000/api/v1/public`,
     //baseURL: `http://localhost:3000/api/v1/public`,
+    baseURL: `https://qje8wp1oc0.execute-api.us-east-1.amazonaws.com/Dev`,
     headers: { Authorization: `Bearer ${token}` },
   });
 

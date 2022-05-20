@@ -38,6 +38,7 @@ export default function LoginForm() {
           Auth.currentSession()
             .then(async (userSession) => {
               const token = userSession.idToken.jwtToken;
+              localStorage.setItem('squad2UserToken', JSON.stringify(token));
               navigate('/dashboard', { replace: true });
               let decoded = jwt_decode(token);
               let squad2User =  { token, decoded }
