@@ -8,8 +8,8 @@ function getTokenLocalStorage(){
 const api = function () {
  const token = getTokenLocalStorage();
   const req = axios.create({
-    //baseURL: `http://api.squad2.tech:3000/api/v1/public/`,
-    baseURL: `http://localhost:3000/api/v1/public`,
+    baseURL: `http://api.squad2.tech:3000/api/v1/public/`,
+    //baseURL: `http://localhost:3000/api/v1/public`,
     headers: { Authorization: `Bearer ${token}` },
   });
 
