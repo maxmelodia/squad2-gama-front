@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
 // material
-import { Stack, TextField, IconButton, Button, Divider, Typography, Grid } from '@mui/material';
+import { Stack, TextField, IconButton, Button, Divider, Typography, Grid, Autocomplete } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../components/Iconify';
@@ -18,6 +18,7 @@ import api from '../services/api';
 
 export default function Perfil() {
   const { dataUser } = useContext(UserContext);
+  const [preferencia, setPreferencia] = useState([]);
 
   const [images, setImages] = useState([]);
   const maxNumber = 1;
@@ -47,6 +48,7 @@ export default function Perfil() {
     data_partida: null,
     data_retorno: null,
     cidade_destino: '',    
+    preferencias: []
   })
 
   const formik = useFormik({
@@ -61,7 +63,6 @@ export default function Perfil() {
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
   
   const  atualizarPerfil = async (values) => {
-
     const usuarioUpdate = {
       id: values.id,
       data_nascimento: values.data_nascimento,
@@ -76,7 +77,8 @@ export default function Perfil() {
         data_partida: values.data_partida,
         data_retorno: values.data_retorno,
         cidade: values.cidade_destino,
-      }]
+      }],
+      preferencias: values.preferencias
     };    
 
     await api(dataUser.token).put(`/usuario`, usuarioUpdate)
@@ -106,6 +108,7 @@ export default function Perfil() {
                 let data_partida = null;
                 let data_retorno = null;
                 let cidade = '';
+                let preferencias = [];
 
                 if (value.destino[0]) {
                   destino_id = value.destino[0].id;
@@ -114,6 +117,10 @@ export default function Perfil() {
                   data_retorno = value.destino[0].data_retorno;
                   cidade = value.destino[0].cidade;
                 };
+
+                if (value.preferencias) {
+                  preferencias = value.preferencias;
+                }
 
                 const ret = {
                   id: value.id,
@@ -130,6 +137,7 @@ export default function Perfil() {
                   data_partida: data_partida,
                   data_retorno: data_retorno,
                   cidade_destino: cidade, 
+                  preferencias
                 };
 
                 return ret;
@@ -144,6 +152,22 @@ export default function Perfil() {
     })();  
   }, []);
   
+  useEffect(() => {
+    (async () => {
+        const params = {
+          lookup: true,
+          orderBy: 'grupo'
+        };
+        await api(dataUser.token).get(`/preferencia`, {params})
+          .then(response => { 
+              setPreferencia(response.data.result.data);
+            })
+          .catch((error) => {
+            console.log(error);
+          });  
+    })();  
+  }, []);
+
   const [open, setOpen] = useState(false);
   const [severity,setSeverity] = useState('success');
   const [message,setMessage] = useState('');
@@ -393,11 +417,40 @@ export default function Perfil() {
           </Grid>           
 
 
+          <Grid item sm={12} md={12} lg={12}>
+            <Typography variant="h6" gutterBottom component="div">
+            Preferências
+            </Typography>            
+          </Grid>
+
+          <Grid container spacing={2}>
+          <Grid item sm={12} md={12} lg={12}>
+            <Autocomplete
+              multiple
+              id="tags-outlined"
+              options={preferencia}
+              getOptionLabel={(option) => option ? `${option.grupo} - ${option.descricao}` : ''}
+              filterSelectedOptions
+              onChange={(e, value) =>
+                formik.setFieldValue("preferencias", value)
+              }
+              value={formik.values.preferencias}              
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Selecione suas preferências"
+                  placeholder="..."
+                />
+              )}
+            />
+          </Grid>                                
+        </Grid>           
+
         </Grid> 
 
         
         <Grid container spacing={2}>
-          <Grid item sm={12} md={6} lg={2}>
+          <Grid item sm={12} md={6} lg={3}>
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
               Atualizar Cadastro
             </LoadingButton>
