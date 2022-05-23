@@ -40,7 +40,13 @@ export default function Perfil() {
     cpf: '',
     cidade: '',
     foto: '',
-    telefone: ''
+    telefone: '',
+    descricao: '',
+    destino_id: null,
+    descricao_destino: '', 
+    data_partida: null,
+    data_retorno: null,
+    cidade_destino: '',    
   })
 
   const formik = useFormik({
@@ -62,11 +68,19 @@ export default function Perfil() {
       cpf: values.cpf,
       cidade: values.cidade,
       foto: values.foto,
-      telefone: values.telefone
+      telefone: values.telefone,
+      descricao: values.descricao,
+      destino: [{
+        id: values.destino_id,
+        descricao: values.descricao_destino, 
+        data_partida: values.data_partida,
+        data_retorno: values.data_retorno,
+        cidade: values.cidade_destino,
+      }]
     };    
 
     await api(dataUser.token).put(`/usuario`, usuarioUpdate)
-    .then(() => { 
+    .then((response) => { 
         if (dataUser.user[0].foto !== values.foto) {
           dataUser.user[0].foto = values.foto;
         };
@@ -85,9 +99,44 @@ export default function Perfil() {
               if (response.data.result[0].foto !== "") {
                 setImages([{data_url: response.data.result[0].foto}]);
               }
-              setUsuario(response.data.result[0]); 
-              //console.log(response.data.result[0]);
-              formik.setValues(response.data.result[0]);            
+
+              const u = response.data.result.map((value) => {
+                let destino_id = '';
+                let descricao = '';
+                let data_partida = null;
+                let data_retorno = null;
+                let cidade = '';
+
+                if (value.destino[0]) {
+                  destino_id = value.destino[0].id;
+                  descricao = value.destino[0].descricao;
+                  data_partida = value.destino[0].data_partida;
+                  data_retorno = value.destino[0].data_retorno;
+                  cidade = value.destino[0].cidade;
+                };
+
+                const ret = {
+                  id: value.id,
+                  nome: value.nome, 
+                  email: value.email,
+                  data_nascimento: value.data_nascimento,
+                  cpf: value.cpf,
+                  cidade: value.cidade,
+                  foto: value.foto,
+                  telefone: value.telefone,
+                  descricao: value.descricao,
+                  destino_id: destino_id,
+                  descricao_destino: descricao, 
+                  data_partida: data_partida,
+                  data_retorno: data_retorno,
+                  cidade_destino: cidade, 
+                };
+
+                return ret;
+              });
+
+              setUsuario(u[0]); 
+              formik.setValues(u[0]);            
             })
           .catch((error) => {
             console.log(error);
@@ -143,9 +192,9 @@ export default function Perfil() {
               errors 
             }) => { 
               
-              if (errors && errors.maxFileSize === true){
-                handleClickAlert('error','Tamanho máximo de imagem 50kb') 
-              }
+              // if (errors && errors.maxFileSize === true){
+              //   handleClickAlert('error','Tamanho máximo de imagem 50kb'); 
+              // }
               
               return (
               // write your building UI
@@ -153,7 +202,7 @@ export default function Perfil() {
                 { 
                   imageList.length === 0 &&
                   <Button fullWidth size="medium" type="button" variant="contained" color="success" onClick={onImageUpload} >
-                    Adicione sua foto
+                    Adicione sua foto (Máximo 50KB)
                   </Button>
                 }
 
@@ -182,9 +231,16 @@ export default function Perfil() {
         </div>
 
         <Stack spacing={3}>
+
         <Divider/>
 
         <Grid container spacing={2}>
+          <Grid item sm={12} md={12} lg={12}>
+            <Typography variant="h6" gutterBottom component="div">
+            Usuário
+            </Typography>            
+          </Grid>
+
           <Grid item sm={12} md={6} lg={6}>
             <TextField
                 fullWidth
@@ -260,14 +316,86 @@ export default function Perfil() {
               maxRows={10}            
               fullWidth
               label="Descrição/Bio"
-              {...getFieldProps('descricao')}
               error={Boolean(touched.descricao && errors.descricao)}
               helperText={touched.descricao && errors.descricao}
+              {...getFieldProps('descricao')}
             />
-          </Grid>                      
+          </Grid>
+
+          <Divider/>
+
+          <Grid item sm={12} md={12} lg={12}>
+            <Typography variant="h6" gutterBottom component="div">
+            Destino
+            </Typography>            
+          </Grid>
+
+          <Grid item sm={12} md={6} lg={8}>
+            <TextField
+              fullWidth
+              label="Cidade"
+              {...getFieldProps('cidade_destino')}
+              error={Boolean(touched.cidade_destino && errors.cidade_destino)}
+              helperText={touched.cidade_destino && errors.cidade_destino}
+            />
+          </Grid>    
+
+          <Grid item sm={12} md={3} lg={2}>
+            <DateCustom
+              required
+              fullWidth
+              helperText={
+                formik.touched.data_partida && formik.errors.data_partida
+              }
+              error={
+                formik.touched.data_partida &&
+                Boolean(formik.errors.data_partida)
+              }
+              label="Data Partida"
+              name="data_partida"
+              value={formik.values.data_partida}
+              onChange={(date) =>
+                formik.setFieldValue("data_partida", date)
+              }
+            />
+          </Grid>
+
+          <Grid item sm={12} md={3} lg={2}>
+            <DateCustom
+              required
+              fullWidth
+              helperText={
+                formik.touched.data_retorno && formik.errors.data_retorno
+              }
+              error={
+                formik.touched.data_retorno &&
+                Boolean(formik.errors.data_retorno)
+              }
+              label="Data Retorno"
+              name="data_retorno"
+              value={formik.values.data_retorno}
+              onChange={(date) =>
+                formik.setFieldValue("data_retorno", date)
+              }
+            />
+          </Grid>          
+
+          <Grid item sm={12} md={12} lg={12}>
+            <TextField
+              fullWidth
+              multiline
+              maxRows={10}                
+              label="Descrição Destino"
+              {...getFieldProps('descricao_destino')}
+              error={Boolean(touched.descricao_destino && errors.descricao_destino)}
+              helperText={touched.descricao_destino && errors.descricao_destino}
+            />
+          </Grid>           
+
+
         </Grid> 
 
-        <Divider/>
+        
         <Grid container spacing={2}>
           <Grid item sm={12} md={6} lg={2}>
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
