@@ -28,6 +28,7 @@
     ]
   },
   "dependencies": {
+    "@aws-amplify/analytics": "^5.2.7",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
     "@faker-js/faker": "^6.1.2",
