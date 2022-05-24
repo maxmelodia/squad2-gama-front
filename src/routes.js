@@ -5,7 +5,7 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 //
 import Blog from './pages/Blog';
 import Perfil from './pages/Perfil';
-import User from './pages/User';
+import BuscarUsuarios from './pages/BuscarUsuarios';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
@@ -21,7 +21,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { path: 'app', element: <DashboardApp /> },
-        { path: 'user', element: <User /> },
+        { path: 'usuarios', element: <BuscarUsuarios /> },
         { path: 'perfil', element: <Perfil /> },
         { path: 'products', element: <Products /> },
         { path: 'blog', element: <Blog /> },

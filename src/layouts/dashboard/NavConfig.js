@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title: 'Encontrar Companhia',
-    path: '/dashboard/user',
+    path: '/dashboard/usuarios',
     icon: getIcon('eva:people-fill'),
   },
   {
