@@ -131,6 +131,7 @@ export default function BuscarUsuarios() {
       renderCell: (params)=>{
       return (
         <BuscarUsuariosMenu />
+        
       )
     } },    
   ];  
