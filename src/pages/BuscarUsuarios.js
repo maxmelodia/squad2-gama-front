@@ -130,7 +130,9 @@ export default function BuscarUsuarios() {
       sortable: false,      
       renderCell: (params)=>{
       return (
-        <BuscarUsuariosMenu />
+        <BuscarUsuariosMenu
+          linha={params.row}
+        />
         
       )
     } },    
