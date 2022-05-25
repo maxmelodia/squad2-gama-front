@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Grid, Typography, Popover,
@@ -6,6 +6,9 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Grid, Typograph
 // component
 import Iconify from '../../../components/Iconify';
 import { fDate2 } from '../../../utils/formatTime';
+import { faker } from '@faker-js/faker';
+import api from '../../../services/api';
+import UserContext from '../../../contexts/user-context';
 
 // ----------------------------------------------------------------------
 
@@ -22,7 +25,8 @@ function calculateAge(dobString) {
      return age;
 }
 
-export default function BuscarUsuariosMenu({linha}) {
+export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}) {
+  const { dataUser } = useContext(UserContext);
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [objPopover, setObjPopover] = useState({});
@@ -31,7 +35,6 @@ export default function BuscarUsuariosMenu({linha}) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleDetalhes = (event) => {
-    //console.log(linha);
     setObjPopover(linha);
     setObjPopoverDestino(linha.destino ? linha.destino[0] : {});
     const prefs = linha.preferencias.sort((a, b) => a.grupo > b.grupo);
@@ -41,7 +44,22 @@ export default function BuscarUsuariosMenu({linha}) {
   };
 
   const handleConectar = () => {
-    console.log('bbbbbbbbbbbbb');
+    const dataConexao = {
+      usuario_publicou_id: linha.id,
+      usuario_conectou_id: dataUser.user[0].id,
+      data_conexao: new Date(),
+      status:"Aberto"          
+    };
+
+    api(dataUser.token)
+      .post('/conexao', dataConexao)
+      .then((response) => {
+        handleRemoveUsuarioConectado(linha);
+        setIsOpen(false);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });    
   };
 
   const handleClose = () => {
@@ -67,18 +85,18 @@ export default function BuscarUsuariosMenu({linha}) {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <ListItemIcon>
             <Iconify icon="eva:file-text-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Mais Detalhes" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleDetalhes(e)} />
+          <ListItemText primary="Mais Detalhes" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleDetalhes(e)}/>
         </MenuItem>
 
-        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }}>
+        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <ListItemIcon>
             <Iconify icon="eva:person-done-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Conectar" primaryTypographyProps={{ variant: 'body2' }} onClick={handleConectar}/>
+          <ListItemText primary="Conectar" primaryTypographyProps={{ variant: 'body2' }} onClick={handleConectar} />
         </MenuItem>
       </Menu>
 
@@ -138,10 +156,12 @@ export default function BuscarUsuariosMenu({linha}) {
             <Grid container spacing={1} sx={{ mt: "3px" }}>
             {objPopoverPreferencias.map((d, index) => {
               return (
-                <Grid item sm={3} md={3} lg={3}>
-                  <Typography variant="subtitle2" index={index}> {d.grupo} </Typography>                
-                  <Typography variant="subtitle2" index={index}> {d.descricao} </Typography>                
-                </Grid>
+                <React.Fragment key={index}>
+                  <Grid item sm={3} md={3} lg={3} >
+                    <Typography variant="subtitle2"> {d.grupo} </Typography>                
+                    <Typography variant="subtitle2"> {d.descricao} </Typography>                
+                  </Grid>
+                </React.Fragment>
               )
             })}
             </Grid>            
