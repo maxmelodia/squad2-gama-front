@@ -29,7 +29,6 @@ export default function BuscarUsuariosMenu({linha}) {
 
   const handleDetalhes = (event) => {
     setObjPopover(linha)
-    console.log(linha);
     setAnchorEl(event.currentTarget);
     setIsOpen(false);
   };
@@ -104,7 +103,7 @@ export default function BuscarUsuariosMenu({linha}) {
             <Typography gutterBottom variant="subtitle1"><strong>Email:</strong> {objPopover.email}</Typography>
             <Typography gutterBottom variant="subtitle1"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
             <Typography gutterBottom variant="subtitle1"><strong>CPF:</strong> {objPopover.email}</Typography>
-            <Typography gutterBottom variant="subtitle1"><strong>Cidade:</strong> {objPopover.email}</Typography>
+            <Typography gutterBottom variant="subtitle1"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
 
           </Grid>
           <Grid></Grid>

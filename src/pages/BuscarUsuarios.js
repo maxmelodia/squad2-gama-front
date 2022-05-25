@@ -52,9 +52,6 @@ export default function BuscarUsuarios() {
   const [sortModel, setSortModel] = useState("-id");
   const [search, setSearch] = useState("");
 
-
-
-
   const columns = [
     // {
     //   field: "Ações",
@@ -133,7 +130,6 @@ export default function BuscarUsuarios() {
         <BuscarUsuariosMenu
           linha={params.row}
         />
-        
       )
     } },    
   ];  
@@ -155,8 +151,8 @@ export default function BuscarUsuarios() {
         params,
       })
       .then((response) => {
-        console.log(response.data.result.data);
-        setDataRows(response.data.result.data);
+        const u = response.data.result.data.filter((d) => d.sub !== dataUser.decoded.sub);
+        setDataRows(u);
         setTotalCount(response.data.result.totalCount);
       })
       .catch((error) => {
