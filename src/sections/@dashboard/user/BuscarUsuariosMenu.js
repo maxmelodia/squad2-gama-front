@@ -5,6 +5,7 @@ import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Grid, Typograph
   Avatar, Stack, Divider } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
+import { fDate2 } from '../../../utils/formatTime';
 
 // ----------------------------------------------------------------------
 
@@ -25,10 +26,16 @@ export default function BuscarUsuariosMenu({linha}) {
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [objPopover, setObjPopover] = useState({});
+  const [objPopoverDestino, setObjPopoverDestino] = useState({});
+  const [objPopoverPreferencias, setObjPopoverDestinoPreferencias] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleDetalhes = (event) => {
-    setObjPopover(linha)
+    //console.log(linha);
+    setObjPopover(linha);
+    setObjPopoverDestino(linha.destino ? linha.destino[0] : {});
+    const prefs = linha.preferencias.sort((a, b) => a.grupo > b.grupo);
+    setObjPopoverDestinoPreferencias(prefs);
     setAnchorEl(event.currentTarget);
     setIsOpen(false);
   };
@@ -99,11 +106,45 @@ export default function BuscarUsuariosMenu({linha}) {
             </Stack> 
             <Divider/>           
 
-            <Typography sx={{mt:'15px'}} gutterBottom variant="subtitle1"><strong>Nome:</strong> {objPopover.nome}</Typography>
-            <Typography gutterBottom variant="subtitle1"><strong>Email:</strong> {objPopover.email}</Typography>
-            <Typography gutterBottom variant="subtitle1"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
-            <Typography gutterBottom variant="subtitle1"><strong>CPF:</strong> {objPopover.email}</Typography>
-            <Typography gutterBottom variant="subtitle1"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
+            <Typography sx={{mt:'15px'}} variant="subtitle2">
+              <Iconify icon="eva:person-outline" width={20} height={20} />
+              <strong>Dados</strong>
+            </Typography>
+            <Typography variant="subtitle2"><strong>Nome:</strong> {objPopover.nome}</Typography>
+            <Typography variant="subtitle2"><strong>Email:</strong> {objPopover.email}</Typography>
+            <Typography variant="subtitle2"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
+            <Typography variant="subtitle2"><strong>CPF:</strong> {objPopover.cpf}</Typography>
+            <Typography variant="subtitle2"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
+
+            <Divider/>           
+            <Typography sx={{mt:'15px'}} variant="subtitle2">
+              <Iconify icon="eva:globe-2-outline" width={20} height={20} />
+              <strong>Destino</strong>
+            </Typography>
+            <Typography sx={{mt:'15px'}} variant="subtitle2"><strong>Cidade:</strong> {objPopoverDestino?.cidade}</Typography>
+            <Typography variant="subtitle2">
+              <strong>Data Partida:</strong> {fDate2(objPopoverDestino?.data_partida)} &nbsp;
+              <strong>Data Retorno:</strong> {fDate2(objPopoverDestino?.data_retorno)}
+            </Typography>
+            <Typography variant="subtitle2"><strong>Descrição:</strong> {objPopoverDestino?.descricao}</Typography>
+
+            <Divider/>    
+                   
+            <Typography sx={{mt:'15px'}} variant="subtitle2">
+              <Iconify icon="healthicons:ui-preferences" width={20} height={20} />
+              <strong>Preferências</strong>
+            </Typography>
+
+            <Grid container spacing={1} sx={{ mt: "3px" }}>
+            {objPopoverPreferencias.map((d, index) => {
+              return (
+                <Grid item sm={3} md={3} lg={3}>
+                  <Typography variant="subtitle2" index={index}> {d.grupo} </Typography>                
+                  <Typography variant="subtitle2" index={index}> {d.descricao} </Typography>                
+                </Grid>
+              )
+            })}
+            </Grid>            
 
           </Grid>
           <Grid></Grid>
