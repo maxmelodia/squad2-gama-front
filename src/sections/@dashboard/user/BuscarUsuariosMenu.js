@@ -1,7 +1,7 @@
 import React, { useRef, useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
-import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Grid, Typography, Popover,
+import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Grid, Typography, Popover, Tooltip,
   Avatar, Stack, Divider } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
@@ -37,7 +37,8 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
   const handleDetalhes = (event) => {
     setObjPopover(linha);
     setObjPopoverDestino(linha.destino ? linha.destino[0] : {});
-    const prefs = linha.preferencias.sort((a, b) => a.grupo > b.grupo);
+    let prefs = [];
+    if (linha.preferencias) prefs = linha.preferencias.sort((a, b) => a.grupo > b.grupo);
     setObjPopoverDestinoPreferencias(prefs);
     setAnchorEl(event.currentTarget);
     setIsOpen(false);
@@ -86,9 +87,11 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
-          <ListItemIcon>
-            <Iconify icon="eva:file-text-fill" width={24} height={24} />
-          </ListItemIcon>
+          <Tooltip title="Detalhes">
+            <ListItemIcon>
+              <Iconify icon="eva:file-text-fill" width={24} height={24} />
+            </ListItemIcon>
+          </Tooltip>          
           <ListItemText primary="Mais Detalhes" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleDetalhes(e)}/>
         </MenuItem>
 

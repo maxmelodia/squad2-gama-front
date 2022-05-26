@@ -42,7 +42,6 @@ export default function VerificarConexoes() {
         params,
       })
       .then((response) => {
-        //console.log('aaaaaaaaaaa',response.data.result);
         setConexoes(response.data.result);
       })
       .catch((error) => {

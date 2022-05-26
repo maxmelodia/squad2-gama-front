@@ -95,7 +95,7 @@ export default function Register() {
             <RegisterForm />
 
             <Typography variant="body2" align="center" sx={{ color: 'text.secondary', mt: 3 }}>
-              Registrado por, Squad2 Gama Academy&nbsp;
+              Registrado por, Veller&nbsp;
               <Link underline="always" color="text.primary" href="#">
                 Terms of Service
               </Link>

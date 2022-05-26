@@ -79,7 +79,7 @@ export default function Login() {
         {mdUp && (
           <SectionStyle>
             <Typography variant="h3" sx={{ px: 4, mt: 10, mb: 5 }}>
-              Olá, Bem vindo ao "Squad2 Gama Academy"
+              Olá, Bem vindo ao "Veller"
             </Typography>
             <img src="/static/illustrations/illustration_login.png" alt="login" />
           </SectionStyle>

@@ -118,6 +118,15 @@ export default function BuscarUsuarios() {
             }
           };
 
+          if (dataUser.user[0].conexoes_recebidas.length > 0) {
+            const fil = dataUser.user[0].conexoes_recebidas.filter((d) => {return d.status !== 'Finalizado'});
+            const con = fil.map(d => d.usuario_conectou_id);
+
+            if (con.includes(d.id)) {
+              conexao = false;
+            }
+          }
+
           return (d.sub !== dataUser.decoded.sub && conexao); 
         });
         setDataRows(u);
