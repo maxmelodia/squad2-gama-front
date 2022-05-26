@@ -18,7 +18,8 @@ const navConfig = [
   },
   {
     title: 'Verificar conexões',
-    path: '/dashboard/products',
+    path: '/dashboard/verificar-conexoes'
+    ,
     icon: getIcon('eva:shopping-bag-fill'),
   },
   {

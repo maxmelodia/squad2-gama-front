@@ -9,7 +9,7 @@ import BuscarUsuarios from './pages/BuscarUsuarios';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
-import Products from './pages/Products';
+import VerificarConexoes from './pages/VerificarConexoes';
 import DashboardApp from './pages/DashboardApp';
 
 // ----------------------------------------------------------------------
@@ -23,7 +23,7 @@ export default function Router() {
         { path: 'app', element: <DashboardApp /> },
         { path: 'usuarios', element: <BuscarUsuarios /> },
         { path: 'perfil', element: <Perfil /> },
-        { path: 'products', element: <Products /> },
+        { path: 'verificar-conexoes', element: <VerificarConexoes /> },
         { path: 'blog', element: <Blog /> },
       ],
     },
