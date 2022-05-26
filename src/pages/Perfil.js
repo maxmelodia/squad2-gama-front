@@ -56,7 +56,7 @@ export default function Perfil() {
     validationSchema: RegisterSchema,
     onSubmit: (values, { setSubmitting }) => {
       atualizarPerfil(values);
-      setSubmitting(false)
+      setSubmitting(false);
     },
   });
 
