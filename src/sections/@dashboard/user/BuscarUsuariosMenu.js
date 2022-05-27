@@ -33,14 +33,15 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
   const [objPopoverDestino, setObjPopoverDestino] = useState({});
   const [objPopoverPreferencias, setObjPopoverDestinoPreferencias] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const inputEl = useRef(null);
 
   const handleDetalhes = (event) => {
+    setAnchorEl(event.currentTarget);
     setObjPopover(linha);
     setObjPopoverDestino(linha.destino ? linha.destino[0] : {});
     let prefs = [];
     if (linha.preferencias) prefs = linha.preferencias.sort((a, b) => a.grupo > b.grupo);
     setObjPopoverDestinoPreferencias(prefs);
-    setAnchorEl(event.currentTarget);
     setIsOpen(false);
   };
 
@@ -77,6 +78,7 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
       </IconButton>
 
       <Menu
+        ref={inputEl}
         open={isOpen}
         anchorEl={ref.current}
         onClose={() => setIsOpen(false)}
@@ -106,15 +108,15 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
       <Popover
           id={id}
           open={open}
-          anchorEl={anchorEl}
+          anchorEl={inputEl.current}
           onClose={handleClose}
           anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
+            vertical: "center",
+            horizontal: "center"
           }}
           transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
+            vertical: "center",
+            horizontal: "center"
           }}
         >
         <Grid container spacing={2} sx={{ margin: "10px" }}>
