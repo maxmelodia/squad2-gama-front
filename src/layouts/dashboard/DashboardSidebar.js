@@ -46,7 +46,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const isDesktop = useResponsive('up', 'lg');
   const { dataUser } = useContext(UserContext);
-  //console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbb',dataUser.user[0].foto);
 
   useEffect(() => {
     if (isOpenSidebar) {

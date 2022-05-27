@@ -68,24 +68,36 @@ export default function ConexaoCard({ conexao }) {
     //setIsOpen(false);
   };
 
-  const handleAlterarStatus = (value = '') => {
-
-    console.log(value, conexao.id);
-
+  const handleAlterarStatus = async (value = '') => {
     if (value !== '') {
       const dataConexao = {
         id: conexao.id,
         status: value
       };
   
-      api(dataUser.token)
+      await api(dataUser.token)
         .put('/conexao', dataConexao)
-        .then((response) => {
-          console.log('conexao',conexao);
+        .then(async (response) => {
           setIsOpen(false);
           conexao.status = value;
           setStatusCard(value);
-        })
+          if (value === 'Aceito') {
+            const dataPlanejamento = {
+              conexao_id: conexao.id,
+              data_plan:  new Date(),
+              cidade: '...',
+              situacao: "Em Andamento"
+            };
+
+            await api(dataUser.token)
+            .post('/planejamento', dataPlanejamento)
+            .then(() => {
+            })
+            .catch((error) => {
+              console.log(error.message);
+            });              
+          }
+        })        
         .catch((error) => {
           console.log(error.message);
         });    
@@ -177,7 +189,6 @@ export default function ConexaoCard({ conexao }) {
           </ListItemIcon>
           <ListItemText primary="Finalizar" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleAlterarStatus('Finalizado')}/>
         </MenuItem>
-
       </Menu>      
 
       <Popover

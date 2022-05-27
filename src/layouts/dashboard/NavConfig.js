@@ -3,7 +3,7 @@ import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
-const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
+const getIcon = (name) => <Iconify icon={name} width={26} height={26} />;
 
 const navConfig = [
   {
@@ -14,42 +14,24 @@ const navConfig = [
   {
     title: 'Encontrar Companhia',
     path: '/dashboard/usuarios',
-    icon: getIcon('eva:people-fill'),
+    icon: getIcon('fa6-solid:users-viewfinder'),
   },
   {
     title: 'Verificar conexões',
     path: '/dashboard/verificar-conexoes'
     ,
-    icon: getIcon('eva:shopping-bag-fill'),
+    icon: getIcon('ic:baseline-connect-without-contact'),
   },
   {
     title: 'Planejar Viagem',
-    path: '/dashboard/blog',
-    icon: getIcon('eva:file-text-fill'),
+    path: '/dashboard/planejar-viagem',
+    icon: getIcon('fluent:airplane-take-off-20-filled'),
   },
-
   {
     title: 'Sair',
     path: '/',
     icon: getIcon('eva:log-out-fill'),
   },
-  
-  
-  // {
-  //   title: 'login',
-  //   path: '/login',
-  //   icon: getIcon('eva:lock-fill'),
-  // },
-  // {
-  //   title: 'register',
-  //   path: '/register',
-  //   icon: getIcon('eva:person-add-fill'),
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: getIcon('eva:alert-triangle-fill'),
-  // },
 ];
 
 export default navConfig;
