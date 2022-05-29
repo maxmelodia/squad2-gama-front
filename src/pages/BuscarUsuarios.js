@@ -16,6 +16,9 @@ import { UserListToolbar, BuscarUsuariosMenu } from '../sections/@dashboard/user
 import { DataGrid, ptBR } from "@mui/x-data-grid";
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
+import { styled } from '@mui/material/styles';
+import { Toolbar, Tooltip, IconButton, OutlinedInput, InputAdornment } from '@mui/material';
+import Iconify from '../components/Iconify';
 
 function calculateAge(dobString) {
   var dob = new Date(dobString);
@@ -31,17 +34,28 @@ function calculateAge(dobString) {
 
 }
 
+const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
+  width: 240,
+  transition: theme.transitions.create(['box-shadow', 'width'], {
+    easing: theme.transitions.easing.easeInOut,
+    duration: theme.transitions.duration.shorter,
+  }),
+  '&.Mui-focused': { width: 320, boxShadow: theme.customShadows.z8 },
+  '& fieldset': {
+    borderWidth: `1px !important`,
+    borderColor: `${theme.palette.grey[500_32]} !important`,
+  },
+}));
+
+
 export default function BuscarUsuarios() {
   const { dataUser } = useContext(UserContext);
-  const [selected, setSelected] = useState([]);
-  const [filterName, setFilterName] = useState('');
   const [dataRows, setDataRows] = useState([]);
-  const [id, setId] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [totalCount, setTotalCount] = useState(1);
   const [page, setPage] = useState(0);
   const [modificado, setModificado] = useState(true);
-  const [sortModel, setSortModel] = useState("-id");
+  const [sortModel, setSortModel] = useState("nome");
   const [search, setSearch] = useState("");
 
   const columns = [
@@ -93,7 +107,7 @@ export default function BuscarUsuarios() {
 
   useEffect(() => {
     pesquisar();
-  }, [modificado, page, sortModel, pageSize]);
+  }, [modificado, page, sortModel, pageSize, search]);
 
   const pesquisar = () => {
     let params = {
@@ -159,7 +173,7 @@ export default function BuscarUsuarios() {
   };  
 
   return (
-    <Page title="User">
+    <Page title="Buscar Viajantes">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -168,16 +182,28 @@ export default function BuscarUsuarios() {
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName}  />
+
+        <SearchStyle
+          //value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Buscar Viajante..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+            </InputAdornment>
+          }
+        /> 
+
+          {/* <UserListToolbar numSelected={selected.length} filterName={filterName} /> */}
 
           <Scrollbar>
-          <TableContainer sx={{ height: 600, width: "100%" }}>
+          <TableContainer sx={{ height: (pageSize * 60), width: "100%" }}>
             <DataGrid
               localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
               rows={dataRows}
               columns={columns}
               pageSize={pageSize}
-              rowsPerPageOptions={[5, 10, 20]}
+              rowsPerPageOptions={[20, 50, 100]}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
               rowHeight={60}
               page={page}
