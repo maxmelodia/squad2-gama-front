@@ -17,7 +17,8 @@ import { DataGrid, ptBR } from "@mui/x-data-grid";
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
 import { styled } from '@mui/material/styles';
-import { Toolbar, Tooltip, IconButton, OutlinedInput, InputAdornment } from '@mui/material';
+import { Rating, Toolbar, Tooltip, IconButton, OutlinedInput, InputAdornment } from '@mui/material';
+
 import Iconify from '../components/Iconify';
 
 function calculateAge(dobString) {
@@ -47,6 +48,9 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
   },
 }));
 
+function randomIntFromInterval(min, max) { 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
 
 export default function BuscarUsuarios() {
   const { dataUser } = useContext(UserContext);
@@ -59,34 +63,53 @@ export default function BuscarUsuarios() {
   const [search, setSearch] = useState("");
 
   const columns = [
-    { field: 'nome', headerName: 'Usuário', width: 200, renderCell: (params)=>{
+    { field: 'rating', headerName: '',
+      align: "center",
+      headerAlign: "center",
+      minWidth:100,
+      maxWidth:100,
+      disableColumnMenu: true,
+      sortable: false,      
+      renderCell: (params)=>{
+      return (
+        <Rating size="small" name="readOnly" value={randomIntFromInterval(3,5)} readOnly  />
+      )
+    } },   
+
+    { field: 'nome', headerName: 'Usuário', flex: 2.5, renderCell: (params)=>{
       return (
         <Stack direction="row" alignItems="center" spacing={2}>
         <Avatar alt={name} src={params.row.foto} />
-          <Typography variant="subtitle2" noWrap>
+          <Typography variant="subtitle1" noWrap>
             {params.row.nome}
           </Typography>
         </Stack>
       )
     } },
-    {
-      field: "email",
-      renderHeader: () => <strong>E-mail</strong>,
-      flex: 2,
-    }, 
+    // {
+    //   field: "email",
+    //   renderHeader: () => <strong>E-mail</strong>,
+    //   flex: 2,
+    // }, 
     {
       field: "cidade",
       renderHeader: () => <strong>Cidade</strong>,
       flex: 2,
     },     
     {
-      field: "data_nascimento",
-      renderHeader: () => <strong>Idade</strong>,
-      valueGetter: (params) => calculateAge(params.row.data_nascimento),
-      minWidth:80,
-      maxWidth:80,      
+      field: "destino",
+      renderHeader: () => <strong>Destino/Local</strong>,
+      valueGetter: (params) => params.row.destino[0] ? params.row.destino[0].cidade : '',
       flex: 2,
-    },       
+    },     
+    // {
+    //   field: "data_nascimento",
+    //   renderHeader: () => <strong>Idade</strong>,
+    //   valueGetter: (params) => calculateAge(params.row.data_nascimento),
+    //   minWidth:80,
+    //   maxWidth:80,      
+    //   flex: 2,
+    // },       
     
     { field: 'acoes', headerName: 'Ações',
       align: "center",
