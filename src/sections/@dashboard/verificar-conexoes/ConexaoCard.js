@@ -54,6 +54,9 @@ export default function ConexaoCard({ conexao }) {
   const [objPopoverDestino, setObjPopoverDestino] = useState({});
   const [objPopoverPreferencias, setObjPopoverDestinoPreferencias] = useState([]);
 
+  const colorIcons =  '#FFB966';
+  const colorIcons2 =  '#706DF2';
+
   useEffect(() => {
     setStatusCard(status);
   }, [status]);
@@ -142,7 +145,7 @@ export default function ConexaoCard({ conexao }) {
         <Stack direction="row" alignItems="center" justifyContent="flex-start">
           <Tooltip title="Detalhes">
             <IconButton sx={{mr:1}} edge="end" onClick={(e) => handleDetalhes(e)}>
-                <Iconify icon={'eva:file-text-fill'} width={30} height={30}/>
+                <Iconify color={colorIcons} icon="icon-park-outline:doc-detail" width={30} height={30}/>
             </IconButton>           
           </Tooltip>
           {statusCard === 'Aberto' &&
@@ -151,7 +154,7 @@ export default function ConexaoCard({ conexao }) {
                 setIsOpen(true);
                 setAnchorEl2(e.currentTarget);
               }}>
-                  <Iconify icon={'eva:checkmark-circle-2-fill'} width={30} height={30}/>
+                  <Iconify color={colorIcons} icon={'akar-icons:person-check'} width={30} height={30}/>
               </IconButton>           
             </Tooltip>
           }
@@ -171,21 +174,21 @@ export default function ConexaoCard({ conexao }) {
       >
         <MenuItem sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <ListItemIcon>
-            <Iconify icon="eva:message-circle-outline" width={24} height={24} />
+            <Iconify color={colorIcons2} icon="eva:message-circle-outline" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Aceitar" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleAlterarStatus('Aceito')}/>
         </MenuItem>
 
         <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <ListItemIcon>
-            <Iconify icon="eva:person-delete-outline" width={24} height={24} />
+            <Iconify color={colorIcons2} icon="eva:person-delete-outline" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Negar" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleAlterarStatus('Negado')}/>
         </MenuItem>
 
         <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <ListItemIcon>
-            <Iconify icon="eva:close-fill" width={24} height={24} />
+            <Iconify color={colorIcons2} icon="eva:close-fill" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Finalizar" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleAlterarStatus('Finalizado')}/>
         </MenuItem>

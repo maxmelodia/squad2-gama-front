@@ -64,7 +64,7 @@ export default function Login() {
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
-          <Logo />
+          <Logo disabledLink={true}/>
 
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
@@ -97,9 +97,9 @@ export default function Login() {
 
             {!smUp && (
               <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                Don’t have an account?{' '}
+                Ainda não tem uma conta?{' '}
                 <Link variant="subtitle2" component={RouterLink} to="/register">
-                  Get started
+                Crie uma aqui ...
                 </Link>
               </Typography>
             )}

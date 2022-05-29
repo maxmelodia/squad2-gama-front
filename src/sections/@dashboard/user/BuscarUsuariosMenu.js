@@ -35,6 +35,8 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
   const [anchorEl, setAnchorEl] = useState(null);
   const inputEl = useRef(null);
 
+  const colorIcons =  '#FFB966';
+
   const handleDetalhes = (event) => {
     setAnchorEl(event.currentTarget);
     setObjPopover(linha);
@@ -91,7 +93,7 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
         <MenuItem sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <Tooltip title="Detalhes">
             <ListItemIcon>
-              <Iconify icon="eva:file-text-fill" width={24} height={24} />
+              <Iconify color={colorIcons} icon="icon-park-outline:doc-detail" width={24} height={24} />
             </ListItemIcon>
           </Tooltip>          
           <ListItemText primary="Mais Detalhes" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleDetalhes(e)}/>
@@ -99,7 +101,7 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
 
         <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }} key={faker.datatype.uuid()}>
           <ListItemIcon>
-            <Iconify icon="eva:person-done-fill" width={24} height={24} />
+            <Iconify color={colorIcons} icon="ic:twotone-connect-without-contact" width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Conectar" primaryTypographyProps={{ variant: 'body2' }} onClick={handleConectar} />
         </MenuItem>

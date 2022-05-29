@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Grid, Avatar, Typography, CardContent, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, 
-  TextField, MenuItem, Select, Stack, } from '@mui/material';
+  TextField, MenuItem, Select, Stack, Divider} from '@mui/material';
 
 import DateCustom from '../../../components/DateCustom';
 
@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 // ----------------------------------------------------------------------
 import api from '../../../services/api';
 import UserContext from '../../../contexts/user-context';
-
+import Label from '../../../components/Label';
 
 const CardAdapt = styled(Card)({
   position: 'relative',
@@ -75,6 +75,14 @@ const CoverImgStyle = styled('img')({
   position: 'absolute',
 });
 
+const ColorButton = styled(Button)(({ theme }) => ({
+  color: 'withe',
+  backgroundColor: '#706DF2',
+  '&:hover': {
+    backgroundColor: '#FFB966',
+  },
+}));
+
 // ----------------------------------------------------------------------
 
 PlanejarViagemCard.propTypes = {
@@ -96,6 +104,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
   const [ openPlanejamento, setOpenPlanejamento ] = useState(false);
   const [ openDescricao, setOpenDescricao ] = useState(false);
   const [ openChat, setOpenChat ] = useState(false);
+  const [statusCard, setStatusCard] = useState('Em andamento');
 
   const [ mensagens, setMensagens ] = useState(null);
 
@@ -188,7 +197,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
         }
 
         return (
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} index={index}  sx = {{background: cor, mb:3}}>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} key={index} sx = {{background: cor, mb:3}}>
               <Typography sx={{ fontSize: 14 }} color="text.secondary" >
                  <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={2}> 
                   <Avatar
@@ -432,6 +441,22 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             }}
           /> */}
 
+          {statusCard && (
+            <Label
+              variant="filled"
+              color={(statusCard === 'Em andamento' && 'info') || (statusCard === 'Finalizado' && 'success') }
+              sx={{
+                zIndex: 9,
+                top: 16,
+                right: 16,
+                position: 'absolute',
+                textTransform: 'uppercase',
+              }} 
+            >
+              {statusCard}
+            </Label>
+          )}          
+
           <Tooltip title={conexao.usuario_publicou.nome}>
             <AvatarStyle
               alt={conexao.usuario_publicou.nome}
@@ -499,27 +524,32 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             ✨{cidade}
           </TitleStyle>
 
-          <Button 
+          <Divider/>
+          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} sx={{mb:3, mt:2}}>
+
+          <ColorButton 
             variant="contained" 
             size="small" 
             startIcon={<Iconify icon="carbon:airline-digital-gate" />}
             onClick={() => setOpenPlanejamento(true)} 
           >
             Planejar
-          </Button>
+          </ColorButton>
 
 
           &nbsp;
-          <Button 
+          <ColorButton 
             variant="contained" 
             size="small" 
             startIcon={<Iconify icon="icon-park-outline:view-grid-detail" />}
             onClick={() => setOpenDescricao(true)} 
             >
             Descrição
-          </Button>
+          </ColorButton>
+
+
           &nbsp;
-          <Button 
+          <ColorButton 
             variant="contained" 
             size="small" 
             startIcon={<Iconify icon="icon-park-outline:wechat" />}
@@ -529,7 +559,8 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             }} 
             >
               Chat
-          </Button>
+          </ColorButton>
+          </Stack>
 
           
         </CardContent>
