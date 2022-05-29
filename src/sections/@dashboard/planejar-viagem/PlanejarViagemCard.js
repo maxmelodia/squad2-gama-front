@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Avatar, Typography, CardContent, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, 
-  TextField, MenuItem, Select, DialogContentText, Fade , Modal, Backdrop    } from '@mui/material';
+import { Card, Grid, Avatar, Typography, CardContent, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, 
+  TextField, MenuItem, Select, Stack, } from '@mui/material';
 
 import DateCustom from '../../../components/DateCustom';
 
 // utils
-import { fDate2 } from '../../../utils/formatTime';
+import { fDate2, fDateTime2 } from '../../../utils/formatTime';
 import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../../components/SvgIconStyle';
@@ -17,6 +16,8 @@ import Iconify from '../../../components/Iconify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 // ----------------------------------------------------------------------
+import api from '../../../services/api';
+import UserContext from '../../../contexts/user-context';
 
 
 const CardAdapt = styled(Card)({
@@ -82,6 +83,8 @@ PlanejarViagemCard.propTypes = {
 };
 
 export default function PlanejarViagemCard({ planejamento, index }) {
+  const { dataUser } = useContext(UserContext);
+  const editMensagem = useRef();
   const { id, conexao_id, data_plan = null, cidade = '', descricao = '', situacao, conexao,      cover, title, view, comment, share, author, createdAt } = planejamento;
 
   // const latestPostLarge = index === 0;
@@ -93,6 +96,8 @@ export default function PlanejarViagemCard({ planejamento, index }) {
   const [ openPlanejamento, setOpenPlanejamento ] = useState(false);
   const [ openDescricao, setOpenDescricao ] = useState(false);
   const [ openChat, setOpenChat ] = useState(false);
+
+  const [ mensagens, setMensagens ] = useState(null);
 
   const [plan, setPlan] = useState({
     id: null,
@@ -131,12 +136,75 @@ export default function PlanejarViagemCard({ planejamento, index }) {
     });    
   },[]);
 
+  const pesquisarMensagens = async () => {
+    await api(dataUser.token)
+      .get(`planejamento/${id}/mensagens`)
+      .then((response) => {
+        setMensagens(response.data.result); 
+      })
+      .catch((error) => {
+        console.log(error.message); 
+      });
+  };
+
+  const enviarMensagem = async () => {
+    if (editMensagem.current.value !== "") {
+      const body = {
+        planejamento_id: id,
+        usuario_id: dataUser.user[0].id,
+        data_hora: new Date(),
+        mensagem: editMensagem.current.value
+      };
+  
+      await api(dataUser.token)
+        .post(`planejamento/${id}/mensagem`,body)
+        .then(async () => {
+          editMensagem.current.value = '';
+          await pesquisarMensagens();
+        })
+        .catch((error) => {
+          console.log(error.message); 
+        });
+
+    };
+
+  };  
+
   const DialogChat = (props) => {
-    const { onClose, open, ...other } = props;
+    const { contentMensagem, onClose, open, ...other } = props;
 
     const handleOk = () => {
       onClose();
     };    
+
+    let contentChat = null;
+    if (contentMensagem) {
+      let cor = '';
+      contentChat = contentMensagem.map((d, index) => {
+        if (cor === '#fff5d6') {
+           cor = '#f3f1ff';          
+        } else {
+          cor = '#fff5d6';
+        }
+
+        return (
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} index={index}  sx = {{background: cor, mb:3}}>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" >
+                 <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={2}> 
+                  <Avatar
+                    src={conexao.usuario_publicou_id === d.usuario.id ? conexao.usuario_publicou.foto : conexao.usuario_conectou.foto}
+                    sx={{ width: 28, height: 28 }}
+                  />
+                  &nbsp;{`${d.usuario.nome}`}<br/>{`${fDateTime2(d.data_hora)} diz:`}
+                 </Stack>
+              </Typography>              
+              <Typography sx={{ fontSize: 18 }} color="text.secondary"  gutterBottom>
+                {d.mensagem}
+              </Typography>
+            </Stack>
+        ); 
+      });
+    }
  
     return (
           <Dialog
@@ -153,17 +221,19 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             
             <DialogContent dividers>
               <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-              ✨Chat...
+              {contentChat}
               </Typography>
+             
             </DialogContent>
-            <DialogContent dividers>
+            <DialogActions disableSpacing sx={{mb:3, mt:3, ml:3, mr:3}}>
               <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">  
-                  <Grid item sm={12} md={11} lg={11}>
+                  <Grid item sm={12} md={10} lg={10}>
                     <TextField
+                        inputRef={editMensagem}
                         size="small" 
                         fullWidth
                         label="Mensagem"
-                        name="mensagem"
+                        name="editMensagem"
                       />              
                   </Grid>
                   <Grid item sm={12} md={1} lg={1}>
@@ -171,15 +241,22 @@ export default function PlanejarViagemCard({ planejamento, index }) {
                       fullWidth
                       variant="contained" 
                       size="small" 
-                      onClick={() => setOpenChat(true)} 
+                      onClick={() => enviarMensagem()} 
                     >
                       Enviar
                     </Button>                
                   </Grid>
-              </Grid>
-            </DialogContent>
-            <DialogActions disableSpacing>
-              <Button onClick={handleOk}>Fechar</Button>
+                  <Grid item sm={12} md={1} lg={1}>
+                    <Button 
+                      fullWidth
+                      variant="contained" 
+                      size="small" 
+                      onClick={handleOk}
+                    >
+                      Fechar
+                    </Button>                
+                  </Grid>
+              </Grid>              
             </DialogActions>
           </Dialog>
     );
@@ -446,7 +523,10 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             variant="contained" 
             size="small" 
             startIcon={<Iconify icon="icon-park-outline:wechat" />}
-            onClick={() => setOpenChat(true)} 
+            onClick={async () => {
+              await pesquisarMensagens();
+              setOpenChat(true)
+            }} 
             >
               Chat
           </Button>
@@ -468,6 +548,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
       <DialogChat
         open={openChat}
         onClose={handleCloseChat}
+        contentMensagem={mensagens}        
       />
 
     </Grid>

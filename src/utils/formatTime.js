@@ -10,6 +10,10 @@ export function fDate2(date) {
   if (date) return format(new Date(date), 'dd/MM/yyyy');
 }
 
+export function fDateTime2(date) {
+  return format(new Date(date), 'dd/MM/yyyy hh:mm');
+}
+
 export function fDateTime(date) {
   return format(new Date(date), 'dd MMM yyyy HH:mm');
 }

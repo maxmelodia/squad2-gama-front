@@ -79,7 +79,7 @@ export default function BuscarUsuarios() {
     { field: 'nome', headerName: 'Usuário', flex: 2.5, renderCell: (params)=>{
       return (
         <Stack direction="row" alignItems="center" spacing={2}>
-        <Avatar alt={name} src={params.row.foto} sx={{ width: 50, height: 50 }}/>
+        <Avatar alt={name} src={params.row.foto} sx={{ width: 35, height: 35 }}/>
           <Typography variant="subtitle1" noWrap>
             {params.row.nome}
           </Typography>
@@ -93,7 +93,7 @@ export default function BuscarUsuarios() {
     // }, 
     {
       field: "cidade",
-      renderHeader: () => <strong>Cidade</strong>,
+      renderHeader: () => <strong>Cidade/Origem</strong>,
       flex: 2,
     },     
     {

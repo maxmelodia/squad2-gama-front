@@ -25,7 +25,6 @@ export default function PlanejarViagem() {
     await api(dataUser.token)
       .get(`usuario/${dataUser.decoded.sub}/planejamentos`)
       .then((response) => {
-        console.log(response.data.result); 
         setPlanejamentos(response.data.result);
       })
       .catch((error) => {
