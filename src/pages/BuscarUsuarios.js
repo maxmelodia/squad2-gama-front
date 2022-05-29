@@ -66,8 +66,8 @@ export default function BuscarUsuarios() {
     { field: 'rating', headerName: '',
       align: "center",
       headerAlign: "center",
-      minWidth:100,
-      maxWidth:100,
+      minWidth:110,
+      maxWidth:110,
       disableColumnMenu: true,
       sortable: false,      
       renderCell: (params)=>{
@@ -79,7 +79,7 @@ export default function BuscarUsuarios() {
     { field: 'nome', headerName: 'Usuário', flex: 2.5, renderCell: (params)=>{
       return (
         <Stack direction="row" alignItems="center" spacing={2}>
-        <Avatar alt={name} src={params.row.foto} />
+        <Avatar alt={name} src={params.row.foto} sx={{ width: 50, height: 50 }}/>
           <Typography variant="subtitle1" noWrap>
             {params.row.nome}
           </Typography>

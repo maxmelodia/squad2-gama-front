@@ -43,9 +43,7 @@ export default function PlanejarViagem() {
         </Stack>
         <Grid container spacing={3}>
           {planejamentos.map((planejamento, index) => (
-            // <Grid item sm={12} md={6} lg={6}>            
-              <PlanejarViagemCard key={planejamento.id} planejamento={planejamento} index={index} />
-            // </Grid>             
+            <PlanejarViagemCard key={planejamento.id} planejamento={planejamento} index={index} />
           ))}
         </Grid>
       </Container>

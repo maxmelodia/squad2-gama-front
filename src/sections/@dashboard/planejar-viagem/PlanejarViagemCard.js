@@ -1,15 +1,21 @@
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { alpha, styled } from '@mui/material/styles';
-import { Box, Link, Card, Grid, Avatar, Typography, CardContent, Button, Tooltip } from '@mui/material';
+import { Box, Link, Card, Grid, Avatar, Typography, CardContent, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, 
+  TextField, MenuItem, Select, DialogContentText, Fade , Modal, Backdrop    } from '@mui/material';
+
+import DateCustom from '../../../components/DateCustom';
+
 // utils
 import { fDate2 } from '../../../utils/formatTime';
 import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../../components/SvgIconStyle';
 import Iconify from '../../../components/Iconify';
-
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 // ----------------------------------------------------------------------
 
 
@@ -76,7 +82,7 @@ PlanejarViagemCard.propTypes = {
 };
 
 export default function PlanejarViagemCard({ planejamento, index }) {
-  const { id, conexao_id, data_plan, cidade, descricao, situacao, conexao,      cover, title, view, comment, share, author, createdAt } = planejamento;
+  const { id, conexao_id, data_plan = null, cidade = '', descricao = '', situacao, conexao,      cover, title, view, comment, share, author, createdAt } = planejamento;
 
   // const latestPostLarge = index === 0;
   // const latestPost = index === 1 || index === 2;
@@ -84,7 +90,232 @@ export default function PlanejarViagemCard({ planejamento, index }) {
   const latestPostLarge = false;
   const latestPost = false;
 
-  console.log('index',index);
+  const [ openPlanejamento, setOpenPlanejamento ] = useState(false);
+  const [ openDescricao, setOpenDescricao ] = useState(false);
+  const [ openChat, setOpenChat ] = useState(false);
+
+  const [plan, setPlan] = useState({
+    id: null,
+    conexao_id: null,
+    data_plan: null,
+    cidade: '',
+    descricao: '',
+    situacao: '',
+  });
+
+  const RegisterSchema = Yup.object().shape({
+    // firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
+    // email: Yup.string().email('Email deve ser válido').required('Email obrigatório'),
+    // password: Yup.string().required('Senha obrigatório'),
+  });  
+
+  const formik = useFormik({
+    initialValues: plan,
+    validationSchema: RegisterSchema,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+        formik.setSubmitting(false);
+        //update(values);
+    },
+  });  
+  
+
+  useEffect(() => {
+    formik.setValues({
+      id: id,
+      conexao_id: conexao_id,
+      data_plan: data_plan,
+      cidade: cidade,
+      descricao: descricao || '',
+      situacao: situacao,
+    });    
+  },[]);
+
+  const DialogChat = (props) => {
+    const { onClose, open, ...other } = props;
+
+    const handleOk = () => {
+      onClose();
+    };    
+ 
+    return (
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 800 } }}
+            maxWidth="md"
+            open={open}
+            {...other}
+          >
+            <DialogTitle>Chat...
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
+                Início: {fDate2(data_plan)}
+              </Typography> 
+            </DialogTitle>
+            
+            <DialogContent dividers>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              ✨Chat...
+              </Typography>
+            </DialogContent>
+            <DialogContent dividers>
+              <Grid container spacing={2} direction="row" justifyContent="center" alignItems="center">  
+                  <Grid item sm={12} md={11} lg={11}>
+                    <TextField
+                        size="small" 
+                        fullWidth
+                        label="Mensagem"
+                        name="mensagem"
+                      />              
+                  </Grid>
+                  <Grid item sm={12} md={1} lg={1}>
+                    <Button 
+                      fullWidth
+                      variant="contained" 
+                      size="small" 
+                      onClick={() => setOpenChat(true)} 
+                    >
+                      Enviar
+                    </Button>                
+                  </Grid>
+              </Grid>
+            </DialogContent>
+            <DialogActions disableSpacing>
+              <Button onClick={handleOk}>Fechar</Button>
+            </DialogActions>
+          </Dialog>
+    );
+  };
+
+  const DialogDescricao = (props) => {
+    const { onClose, open, ...other } = props;
+
+    const handleOk = () => {
+      onClose();
+    };    
+ 
+    return (
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 400 } }}
+            maxWidth="sm"
+            open={open}
+            {...other}
+          >
+            <DialogTitle>Descrição da Viagem
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
+                Início: {fDate2(data_plan)}
+              </Typography> 
+            </DialogTitle>
+            
+            <DialogContent dividers>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              ✨{descricao}
+              </Typography>
+            </DialogContent>
+            <DialogActions disableSpacing>
+              <Button onClick={handleOk}>Ok</Button>
+            </DialogActions>
+          </Dialog>
+    );
+  };
+
+
+  const DialogCustom = (props) => {
+    //const { onClose, value: valueProp, open, ...other } = props;
+    const { onClose, open, ...other } = props;
+
+    const handleCancel = () => {
+      onClose();
+    }; 
+    const handleOk = () => {
+      onClose();
+    };    
+ 
+    return (
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 800 } }}
+            maxWidth="md"
+            //TransitionProps={{ onEntering: handleEntering }}
+            open={open}
+            {...other}
+          >
+            <DialogTitle>Planejar Viagem
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
+                Início: {fDate2(data_plan)}
+              </Typography> 
+            </DialogTitle>
+            
+            <DialogContent dividers>
+              <form noValidate onSubmit={formik.handleSubmit}>
+
+                <Grid container spacing={2}>  
+                        
+                  <Grid item sm={12} md={9} lg={9}>
+                    <TextField
+                        fullWidth
+                        label="Cidade Destino"
+                        name="cidade"
+                        value={formik.values.cidade ? formik.values.cidade : '' } 
+                        onChange={formik.handleChange}
+                        error={formik.touched.cidade && Boolean(formik.errors.cidade)}
+                        helperText={formik.touched.cidade && formik.errors.cidade}                            
+                      />
+                  </Grid> 
+   
+                  <Grid item sm={12} md={3} lg={3}>
+                    <Select
+                      fullWidth
+                      label="Status"
+                      value={formik.values.situacao}
+                    >
+                      <MenuItem value={'Em Andamento'}>Em Andamento</MenuItem> 
+                      <MenuItem value={'Finalizado'}>Finalizado</MenuItem>
+                    </Select>
+                  </Grid> 
+
+                  <Grid item sm={12} md={12} lg={12}>
+                  <TextField
+                      fullWidth
+                      multiline
+                      rows={5}
+                      label="Informações da viagem"
+                      name="descricao"
+                      onChange={formik.handleChange}
+                      value={formik.values.descricao ? formik.values.descricao : '' } 
+                      error={Boolean(formik.touched.descricao && formik.errors.descricao)}
+                      helperText={formik.touched.descricao && formik.errors.descricao}
+                    />
+                  </Grid> 
+                           
+                </Grid>
+              </form>        
+            </DialogContent>
+            <DialogActions disableSpacing>
+              <Button onClick={handleCancel}>
+                Cancelar
+              </Button>
+              <Button onClick={handleOk}>Ok</Button>
+            </DialogActions>
+          </Dialog>
+    );
+  };
+
+
+  const handleClose = (newValue) => {
+    setOpenPlanejamento(false);
+
+    if (newValue) {
+      setValue(newValue);
+    }
+  };
+
+  const handleCloseDescricao = (newValue) => {
+    setOpenDescricao(false);
+  };
+
+  const handleCloseChat = (newValue) => {
+    setOpenChat(false);
+  };
+
+
   return (
     // <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
     <Grid item xs={12} sm={6} md={6} lg={4}>
@@ -191,15 +422,55 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             ✨{cidade}
           </TitleStyle>
 
-          <Button variant="contained" size="small" component={RouterLink} to="#" startIcon={<Iconify icon="carbon:airline-digital-gate" />}>
+          <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<Iconify icon="carbon:airline-digital-gate" />}
+            onClick={() => setOpenPlanejamento(true)} 
+          >
             Planejar
           </Button>
+
+
           &nbsp;
-          <Button variant="contained" size="small" component={RouterLink} to="#" startIcon={<Iconify icon="icon-park-outline:view-grid-detail" />}>
+          <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<Iconify icon="icon-park-outline:view-grid-detail" />}
+            onClick={() => setOpenDescricao(true)} 
+            >
             Descrição
           </Button>
+          &nbsp;
+          <Button 
+            variant="contained" 
+            size="small" 
+            startIcon={<Iconify icon="icon-park-outline:wechat" />}
+            onClick={() => setOpenChat(true)} 
+            >
+              Chat
+          </Button>
+
+          
         </CardContent>
       </CardAdapt>
+
+      <DialogCustom
+        open={openPlanejamento}
+        onClose={handleClose}
+      />
+
+      <DialogDescricao
+        open={openDescricao}
+        onClose={handleCloseDescricao}
+      />
+
+      <DialogChat
+        open={openChat}
+        onClose={handleCloseChat}
+      />
+
     </Grid>
   );
+
 }
