@@ -104,7 +104,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
   const [ openPlanejamento, setOpenPlanejamento ] = useState(false);
   const [ openDescricao, setOpenDescricao ] = useState(false);
   const [ openChat, setOpenChat ] = useState(false);
-  const [statusCard, setStatusCard] = useState('Em andamento');
 
   const [ mensagens, setMensagens ] = useState(null);
 
@@ -441,10 +440,12 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             }}
           /> */}
 
-          {statusCard && (
+          {console.log(situacao)}  
+
+          {situacao && (
             <Label
               variant="filled"
-              color={(statusCard === 'Em andamento' && 'info') || (statusCard === 'Finalizado' && 'success') }
+              color={(situacao === 'Em Andamento' && 'info') || (situacao === 'Finalizado' && 'success') || '' }
               sx={{
                 zIndex: 9,
                 top: 16,
@@ -453,7 +454,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
                 textTransform: 'uppercase',
               }} 
             >
-              {statusCard}
+              {situacao}
             </Label>
           )}          
 
