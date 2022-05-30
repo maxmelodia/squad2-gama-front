@@ -196,8 +196,8 @@ export default function PlanejarViagemCard({ planejamento, index }) {
         }
 
         return (
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} key={index} sx = {{background: cor, mb:3}}>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" >
+            <Stack p={2} direction="row" alignItems="center" justifyContent="space-between" mb={1} key={index} sx = {{background: cor, mb:3}}>
+              <Typography component={'span'} sx={{ fontSize: 14 }} color="text.secondary" >
                  <Stack direction="row" justifyContent="flex-start" alignItems="flex-start" spacing={2}> 
                   <Avatar
                     src={conexao.usuario_publicou_id === d.usuario.id ? conexao.usuario_publicou.foto : conexao.usuario_conectou.foto}
@@ -206,7 +206,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
                   &nbsp;{`${d.usuario.nome}`}<br/>{`${fDateTime2(d.data_hora)} diz:`}
                  </Stack>
               </Typography>              
-              <Typography sx={{ fontSize: 18 }} color="text.secondary"  gutterBottom>
+              <Typography component={'span'} sx={{ fontSize: 18 }} color="text.secondary"  gutterBottom>
                 {d.mensagem}
               </Typography>
             </Stack>
@@ -228,7 +228,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             </DialogTitle>
             
             <DialogContent dividers>
-              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              <Typography component={'span'} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
               {contentChat}
               </Typography>
              
@@ -248,7 +248,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
                     <Button 
                       fullWidth
                       variant="contained" 
-                      size="small" 
+                      size="medium" 
                       onClick={() => enviarMensagem()} 
                     >
                       Enviar
@@ -258,7 +258,7 @@ export default function PlanejarViagemCard({ planejamento, index }) {
                     <Button 
                       fullWidth
                       variant="contained" 
-                      size="small" 
+                      size="medium" 
                       onClick={handleOk}
                     >
                       Fechar
@@ -439,8 +439,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
               ...((latestPostLarge || latestPost) && { display: 'none' }), 
             }}
           /> */}
-
-          {console.log(situacao)}  
 
           {situacao && (
             <Label

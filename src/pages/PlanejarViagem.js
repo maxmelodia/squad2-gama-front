@@ -1,17 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Grid, Container, Stack, Typography } from '@mui/material';
 // components
 import Page from '../components/Page';
-import Iconify from '../components/Iconify';
 import { PlanejarViagemCard } from '../sections/@dashboard/planejar-viagem';
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
-
-// // mock
-// import POSTS from '../_mock/blog';
-
 
 export default function PlanejarViagem() {
   const { dataUser } = useContext(UserContext);

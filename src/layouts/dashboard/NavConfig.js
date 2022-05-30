@@ -7,9 +7,9 @@ const getIcon = (name) => <Iconify icon={name} width={26} height={26} />;
 
 const navConfig = [
   {
-    title: 'dashboard',
+    title: 'Início',
     path: '/dashboard/app',
-    icon: getIcon('eva:pie-chart-2-fill'),
+    icon: getIcon('ant-design:home-outlined'),
   },
   {
     title: 'Encontrar Companhia',
