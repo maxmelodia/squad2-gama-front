@@ -2,13 +2,13 @@ import React, { useRef, useState, useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText, Grid, Typography, Popover, Tooltip,
-  Avatar, Stack, Divider } from '@mui/material';
+  Avatar, Stack, Divider, DialogTitle, DialogContent, Dialog, DialogActions, Button } from '@mui/material';
 // component
 import Iconify from '../../../components/Iconify';
 import { fDate2 } from '../../../utils/formatTime';
 import { faker } from '@faker-js/faker';
 import api from '../../../services/api';
-import UserContext from '../../../contexts/user-context';
+import UserContext from '../../../contexts/user-context';  
 
 // ----------------------------------------------------------------------
 
@@ -35,6 +35,8 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
   const [anchorEl, setAnchorEl] = useState(null);
   const inputEl = useRef(null);
 
+  const [ openDetalhes, setOpenDetalhes ] = useState(false);
+
   const colorIcons =  '#FFB966';
 
   const handleDetalhes = (event) => {
@@ -45,6 +47,7 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
     if (linha.preferencias) prefs = linha.preferencias.sort((a, b) => a.grupo > b.grupo);
     setObjPopoverDestinoPreferencias(prefs);
     setIsOpen(false);
+    setOpenDetalhes(true);
   };
 
   const handleConectar = () => {
@@ -66,12 +69,103 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
       });    
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+
+  const handleCloseDetalhes = () => {
+    setOpenDetalhes(false);
   };
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;  
+
+
+  const DialogDetalhes = (props) => {
+    const { onClose, open, ...other } = props;
+
+    const handleOk = () => {
+      onClose();
+    };    
+ 
+    return (
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 800 } }}
+            maxWidth="sm"
+            open={open}
+            {...other}
+          >
+            <DialogTitle>Detalhes do Usuário
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
+                {/* Início: {fDate2(data_plan)} */}
+              </Typography> 
+            </DialogTitle>
+            
+            <DialogContent dividers>
+              <Grid container spacing={2} sx={{ margin: "5px" }}>
+                  <Grid item xs={12} sm={6} md={6} lg={6}>
+                    <Stack sx={{mb:'5px'}} direction="row" alignItems="center" spacing={2}>
+                    <Avatar sx={{ height: '70px', width: '70px' }} src={objPopover.foto} />
+                      <Typography variant="h6" noWrap>
+                        {objPopover.usuario}
+                      </Typography>
+                    </Stack> 
+                  </Grid>        
+
+                  <Grid item xs={12} sm={6} md={6} lg={6}>
+                    <Typography sx={{mt:'15px'}} variant="subtitle1">
+                      <Iconify icon="eva:person-outline" width={20} height={20} />
+                      <strong>Dados</strong>
+                    </Typography>
+                    <Typography variant="subtitle1"><strong>Nome:</strong> {objPopover.nome}</Typography>
+                    <Typography variant="subtitle1"><strong>Email:</strong> {objPopover.email}</Typography>
+                    <Typography variant="subtitle1"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
+                    <Typography variant="subtitle1"><strong>CPF:</strong> {objPopover.cpf}</Typography>
+                    <Typography variant="subtitle1"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
+                  </Grid>
+
+                  <Divider/>    
+
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Typography sx={{mt:'15px'}} variant="subtitle1">
+                      <Iconify icon="eva:globe-2-outline" width={20} height={20} />
+                      <strong>Destino</strong>
+                    </Typography>
+                    <Typography sx={{mt:'10px'}} variant="subtitle1"><strong>Cidade:</strong> {objPopoverDestino?.cidade}</Typography>
+                    <Typography variant="subtitle1">
+                      <strong>Data Partida:</strong> {fDate2(objPopoverDestino?.data_partida)} &nbsp;
+                      <strong>Data Retorno:</strong> {fDate2(objPopoverDestino?.data_retorno)}
+                    </Typography>
+                    <Typography variant="subtitle1"><strong>Descrição:</strong> {objPopoverDestino?.descricao}</Typography>
+                  </Grid>
+
+                  <Divider/>    
+                        
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Typography sx={{mt:'10px'}} variant="subtitle1">
+                      <Iconify icon="healthicons:ui-preferences" width={20} height={20} />
+                      <strong>Preferências</strong>
+                    </Typography>
+
+                    <Grid container spacing={1} sx={{ mt: "3px" }}>
+                      {objPopoverPreferencias.map((d, index) => {
+                        return (
+                          <React.Fragment key={index}>
+                            <Grid item sm={3} md={3} lg={3} >
+                              <Typography variant="subtitle1"> {d.grupo} </Typography>                
+                              <Typography variant="subtitle1" sx={{color:'blue'}}> {d.descricao} </Typography>                
+                            </Grid>
+                          </React.Fragment>
+                        )
+                      })}
+                    </Grid>                
+                  </Grid>                
+              </Grid>              
+              
+            </DialogContent>
+            <DialogActions disableSpacing>
+              <Button onClick={handleOk}>Ok</Button>
+            </DialogActions>
+          </Dialog>
+    );
+  };  
 
   return (
     <>
@@ -107,76 +201,10 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
         </MenuItem>
       </Menu>
 
-      <Popover
-          id={id}
-          open={open}
-          anchorEl={inputEl.current}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "center",
-            horizontal: "center"
-          }}
-          transformOrigin={{
-            vertical: "center",
-            horizontal: "center"
-          }}
-        >
-        <Grid container spacing={2} sx={{ margin: "10px" }}>
-          <Grid>
-            <Stack sx={{mb:'15px'}} direction="row" alignItems="center" spacing={2}>
-            <Avatar  src={objPopover.foto} />
-              <Typography variant="h6" noWrap>
-                {objPopover.usuario}
-              </Typography>
-            </Stack> 
-            <Divider/>           
-
-            <Typography sx={{mt:'15px'}} variant="subtitle2">
-              <Iconify icon="eva:person-outline" width={20} height={20} />
-              <strong>Dados</strong>
-            </Typography>
-            <Typography variant="subtitle2"><strong>Nome:</strong> {objPopover.nome}</Typography>
-            <Typography variant="subtitle2"><strong>Email:</strong> {objPopover.email}</Typography>
-            <Typography variant="subtitle2"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
-            <Typography variant="subtitle2"><strong>CPF:</strong> {objPopover.cpf}</Typography>
-            <Typography variant="subtitle2"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
-
-            <Divider/>           
-            <Typography sx={{mt:'15px'}} variant="subtitle2">
-              <Iconify icon="eva:globe-2-outline" width={20} height={20} />
-              <strong>Destino</strong>
-            </Typography>
-            <Typography sx={{mt:'15px'}} variant="subtitle2"><strong>Cidade:</strong> {objPopoverDestino?.cidade}</Typography>
-            <Typography variant="subtitle2">
-              <strong>Data Partida:</strong> {fDate2(objPopoverDestino?.data_partida)} &nbsp;
-              <strong>Data Retorno:</strong> {fDate2(objPopoverDestino?.data_retorno)}
-            </Typography>
-            <Typography variant="subtitle2"><strong>Descrição:</strong> {objPopoverDestino?.descricao}</Typography>
-
-            <Divider/>    
-                   
-            <Typography sx={{mt:'15px'}} variant="subtitle2">
-              <Iconify icon="healthicons:ui-preferences" width={20} height={20} />
-              <strong>Preferências</strong>
-            </Typography>
-
-            <Grid container spacing={1} sx={{ mt: "3px" }}>
-            {objPopoverPreferencias.map((d, index) => {
-              return (
-                <React.Fragment key={index}>
-                  <Grid item sm={3} md={3} lg={3} >
-                    <Typography variant="subtitle2"> {d.grupo} </Typography>                
-                    <Typography variant="subtitle2"> {d.descricao} </Typography>                
-                  </Grid>
-                </React.Fragment>
-              )
-            })}
-            </Grid>            
-
-          </Grid>
-          <Grid></Grid>
-        </Grid>
-      </Popover>
+      <DialogDetalhes
+        open={openDetalhes}
+        onClose={handleCloseDetalhes}
+      />
 
     </>
   );

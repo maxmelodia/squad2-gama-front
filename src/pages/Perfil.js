@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import { useFormik, Form, FormikProvider } from 'formik';
 import { useNavigate } from 'react-router-dom';
 // material
-import { Stack, TextField, IconButton, Button, Divider, Typography, Grid, Autocomplete } from '@mui/material';
+import { Stack, TextField, IconButton, Button, Divider, Typography, Grid, Autocomplete, Tooltip } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // component
 import Iconify from '../components/Iconify';
@@ -195,77 +195,85 @@ export default function Perfil() {
       />
       <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
         <Divider/>
-        <div className="App">
-          <ImageUploading
-            multiple
-            value={images}
-            onChange={onChange}
-            maxNumber={maxNumber}
-            dataURLKey="data_url"
-            imgExtension={[".jpg", ".gif", ".png", ".gif"]}
-            maxFileSize={50000} 
-          >
-            {({
-              imageList,
-              onImageUpload,
-              onImageRemoveAll,
-              onImageUpdate,
-              onImageRemove,
-              isDragging,
-              dragProps,
-              errors 
-            }) => { 
-              
-              // if (errors && errors.maxFileSize === true){
-              //   handleClickAlert('error','Tamanho máximo de imagem 50kb'); 
-              // }
-              
-              return (
-              // write your building UI
-              <div className="upload__image-wrapper">
-                { 
-                  imageList.length === 0 &&
-                  <Button fullWidth size="medium" type="button" variant="contained" color="success" onClick={onImageUpload} >
-                    Adicione sua foto (Máximo 50KB)
-                  </Button>
-                }
-
-                &nbsp;
-                {imageList.map((image, index) => {
-                  formik.values.foto = image.data_url;
-                  return (
-                  <div key={index} className="image-item">
-                    <img src={image.data_url} alt="" width="150" />
-                    <div className="image-item__btn-wrapper">
-                    <IconButton edge="end" onClick={() => onImageUpdate(index)}>
-                        <Iconify icon={'eva:refresh-fill'} />
-                    </IconButton>                 
-                    <IconButton edge="end" onClick={() => {
-                      formik.values.foto = '';
-                      onImageRemove(index);
-                      }}>
-                        <Iconify icon={'eva:trash-2-outline'} />
-                    </IconButton>                 
-                    </div>
-                  </div>
-                )})}
-              </div>
-            )}}
-          </ImageUploading>
-        </div>
-
-        <Stack spacing={3}>
-
-        <Divider/>
-
         <Grid container spacing={2}>
+
+          <Grid item sm={12} md={12} lg={12}>
+
+          <div className="App">
+            <ImageUploading
+              multiple
+              value={images}
+              onChange={onChange}
+              maxNumber={maxNumber}
+              dataURLKey="data_url"
+              imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+              maxFileSize={50000} 
+            >
+              {({
+                imageList,
+                onImageUpload,
+                onImageRemoveAll,
+                onImageUpdate,
+                onImageRemove,
+                isDragging,
+                dragProps,
+                errors 
+              }) => { 
+                
+                // if (errors && errors.maxFileSize === true){
+                //   handleClickAlert('error','Tamanho máximo de imagem 50kb'); 
+                // }
+                
+                return (
+                // write your building UI
+                <div className="upload__image-wrapper">
+                  { 
+                    imageList.length === 0 &&
+                    <Button fullWidth size="medium" type="button" variant="contained" color="success" onClick={onImageUpload} >
+                      Adicione sua foto (Máximo 50KB)
+                    </Button>
+                  }
+
+                  &nbsp;
+                  {imageList.map((image, index) => {
+                    formik.values.foto = image.data_url;
+                    return (
+                    <div key={index} className="image-item">
+                      <Typography variant="caption" component="span">Máximo: 50KB</Typography>
+                      
+                      <img src={image.data_url} alt="" width="150" />
+                      <div className="image-item__btn-wrapper">
+                      <Tooltip title="Atualizar foto">                        
+                        <IconButton edge="end" onClick={() => onImageUpdate(index)}>
+                            <Iconify icon={'eva:refresh-fill'} />
+                        </IconButton>                 
+                      </Tooltip>                        
+                      <Tooltip title="Excluir foto">                        
+                      <IconButton edge="end" onClick={() => {
+                        formik.values.foto = '';
+                        onImageRemove(index);
+                        }}>
+                          <Iconify icon={'eva:trash-2-outline'} />
+                      </IconButton>  
+                      </Tooltip>                        
+                      </div>
+                    </div>
+                  )})}
+                </div>
+              )}}
+            </ImageUploading>
+          </div>
+          </Grid>
+
+          {/* <Divider/> */}
+
           <Grid item sm={12} md={12} lg={12}>
             <Typography variant="h6" gutterBottom component="div">
             Usuário
             </Typography>            
           </Grid>
 
-          <Grid item sm={12} md={6} lg={6}>
+          <Grid item sm={12} md={4} lg={4}>
             <TextField
                 fullWidth
                 label="Nome"
@@ -274,7 +282,8 @@ export default function Perfil() {
                 helperText={touched.firstName && errors.firstName}
               />
           </Grid> 
-          <Grid item sm={12} md={6} lg={6}>
+
+          <Grid item sm={12} md={4} lg={4}>
             <TextField
               disabled
               fullWidth
@@ -285,7 +294,7 @@ export default function Perfil() {
             />
           </Grid> 
 
-          <Grid item sm={12} md={4} lg={2}>
+          <Grid item sm={12} md={2} lg={2}>
             <DateCustom
               required
               fullWidth
@@ -304,7 +313,8 @@ export default function Perfil() {
               }
             />
           </Grid>
-          <Grid item sm={12} md={4} lg={2}>
+
+          <Grid item sm={12} md={42} lg={2}>
             <TextField
               fullWidth
               label="CPF"
@@ -313,7 +323,8 @@ export default function Perfil() {
               helperText={touched.cpf && errors.cpf}
             />
           </Grid> 
-          <Grid item sm={12} md={4} lg={2}>
+
+          <Grid item sm={12} md={2} lg={2}>
             <TextField
               fullWidth
               label="Telefone"
@@ -321,10 +332,9 @@ export default function Perfil() {
               error={Boolean(touched.telefone && errors.telefone)}
               helperText={touched.telefone && errors.telefone}
             />
-          </Grid>           
+          </Grid>         
 
-
-          <Grid item sm={12} md={12} lg={6}>
+          <Grid item sm={12} md={4} lg={4}>
             <TextField
               fullWidth
               label="Cidade"
@@ -334,7 +344,7 @@ export default function Perfil() {
             />
           </Grid>  
 
-          <Grid item sm={12} md={12} lg={12}>
+          <Grid item sm={12} md={6} lg={6}>
             <TextField
               multiline
               maxRows={10}            
@@ -354,7 +364,7 @@ export default function Perfil() {
             </Typography>            
           </Grid>
 
-          <Grid item sm={12} md={6} lg={8}>
+          <Grid item sm={12} md={3} lg={3}>
             <TextField
               fullWidth
               label="Cidade"
@@ -364,7 +374,7 @@ export default function Perfil() {
             />
           </Grid>    
 
-          <Grid item sm={12} md={3} lg={2}>
+          <Grid item sm={12} md={2} lg={2}>
             <DateCustom
               required
               fullWidth
@@ -384,7 +394,7 @@ export default function Perfil() {
             />
           </Grid>
 
-          <Grid item sm={12} md={3} lg={2}>
+          <Grid item sm={12} md={2} lg={2}>
             <DateCustom
               required
               fullWidth
@@ -404,7 +414,7 @@ export default function Perfil() {
             />
           </Grid>          
 
-          <Grid item sm={12} md={12} lg={12}>
+          <Grid item sm={12} md={5} lg={5}>
             <TextField
               fullWidth
               multiline
@@ -424,32 +434,32 @@ export default function Perfil() {
           </Grid>
 
           <Grid container spacing={2}>
-          <Grid item sm={12} md={12} lg={12}>
-            <Autocomplete
-              multiple
-              id="tags-outlined"
-              options={preferencia}
-              getOptionLabel={(option) => option ? `${option.grupo} - ${option.descricao}` : ''}
-              filterSelectedOptions
-              onChange={(e, value) =>
-                formik.setFieldValue("preferencias", value)
-              }
-              value={formik.values.preferencias}              
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Selecione suas preferências"
-                  placeholder="..."
-                />
-              )}
-            />
-          </Grid>                                
-        </Grid>           
-
+            <Grid item sm={12} md={12} lg={12}>
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={preferencia}
+                getOptionLabel={(option) => option ? `${option.grupo} - ${option.descricao}` : ''}
+                filterSelectedOptions
+                onChange={(e, value) =>
+                  formik.setFieldValue("preferencias", value)
+                }
+                value={formik.values.preferencias}              
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Selecione suas preferências"
+                    placeholder="..."
+                  />
+                )}
+              />
+            </Grid>                                
+          </Grid>          
         </Grid> 
 
+        <Divider/>
         
-        <Grid container spacing={2}>
+        <Grid sx={{mt:2}} container spacing={2}>
           <Grid item sm={12} md={6} lg={3}>
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
               Atualizar Cadastro
@@ -457,7 +467,7 @@ export default function Perfil() {
           </Grid>                      
         </Grid> 
 
-        </Stack>
+        {/* </Stack> */}
       </Form>
 
     </FormikProvider>
