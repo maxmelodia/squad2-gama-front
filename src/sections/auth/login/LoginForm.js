@@ -42,7 +42,7 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const LoginSchema = Yup.object().shape({
     usuario: Yup.string().required('Usuário é obrigatório'),    
-    password: Yup.string().required('Password é obrigatório'),
+    password: Yup.string().required('Password é obrigatório').min(6, 'Mínimo 6 caracteres!'),
   });
 
   const formik = useFormik({

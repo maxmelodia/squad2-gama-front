@@ -1,25 +1,21 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Grid, Avatar, Typography, CardContent, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, 
-  TextField, MenuItem, Select, Stack, Divider} from '@mui/material';
-
-import DateCustom from '../../../components/DateCustom';
+  TextField, Stack, Divider} from '@mui/material';
 
 // utils
 import { fDate2, fDateTime2 } from '../../../utils/formatTime';
-import { fShortenNumber } from '../../../utils/formatNumber';
-//
-import SvgIconStyle from '../../../components/SvgIconStyle';
 import Iconify from '../../../components/Iconify';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+
 // ----------------------------------------------------------------------
 import api from '../../../services/api';
 import UserContext from '../../../contexts/user-context';
 import Label from '../../../components/Label';
 import CustomLoad from '../../../components/CustomLoad';
+
+import DialogPlanejamento from './DialogPlanejamento';
 
 const CardAdapt = styled(Card)({
   position: 'relative',
@@ -91,7 +87,7 @@ PlanejarViagemCard.propTypes = {
   index: PropTypes.number,
 };
 
-export default function PlanejarViagemCard({ planejamento, index }) {
+export default function PlanejarViagemCard({ planejamento, index, handleAtualizarCards }) {
   const { dataUser } = useContext(UserContext);
   const editMensagem = useRef();
   const { id, conexao_id, data_plan = null, cidade = '', descricao = '', situacao, conexao,      cover, title, view, comment, share, author, createdAt } = planejamento;
@@ -109,43 +105,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
   const [ mensagens, setMensagens ] = useState(null);
 
   const [isLoad, setIsLoad] = useState(false);
-
-  const [plan, setPlan] = useState({
-    id: null,
-    conexao_id: null,
-    data_plan: null,
-    cidade: '',
-    descricao: '',
-    situacao: '',
-  });
-
-  const RegisterSchema = Yup.object().shape({
-    // firstName: Yup.string().min(2, 'Muito curto!').max(20, 'Muito Longo!').required('Usuário obrigatório'),
-    // email: Yup.string().email('Email deve ser válido').required('Email obrigatório'),
-    // password: Yup.string().required('Senha obrigatório'),
-  });  
-
-  const formik = useFormik({
-    initialValues: plan,
-    validationSchema: RegisterSchema,
-    enableReinitialize: true,
-    onSubmit: (values) => {
-        formik.setSubmitting(false);
-        //update(values);
-    },
-  });  
-  
-
-  useEffect(() => {
-    formik.setValues({
-      id: id,
-      conexao_id: conexao_id,
-      data_plan: data_plan,
-      cidade: cidade,
-      descricao: descricao || '',
-      situacao: situacao,
-    });    
-  },[]);
 
   const pesquisarMensagens = async () => {
     setIsLoad(true);
@@ -311,107 +270,21 @@ export default function PlanejarViagemCard({ planejamento, index }) {
     );
   };
 
-
-  const DialogCustom = (props) => {
-    //const { onClose, value: valueProp, open, ...other } = props;
-    const { onClose, open, ...other } = props;
-
-    const handleCancel = () => {
-      onClose();
-    }; 
-    const handleOk = () => {
-      onClose();
-    };    
- 
-    return (
-          <Dialog
-            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 800 } }}
-            maxWidth="md"
-            //TransitionProps={{ onEntering: handleEntering }}
-            open={open}
-            {...other}
-          >
-            <DialogTitle>Planejar Viagem
-            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-                Início: {fDate2(data_plan)}
-              </Typography> 
-            </DialogTitle>
-            
-            <DialogContent dividers>
-              <form noValidate onSubmit={formik.handleSubmit}>
-
-                <Grid container spacing={2}>  
-                        
-                  <Grid item sm={12} md={9} lg={9}>
-                    <TextField
-                        fullWidth
-                        label="Cidade Destino"
-                        name="cidade"
-                        value={formik.values.cidade ? formik.values.cidade : '' } 
-                        onChange={formik.handleChange}
-                        error={formik.touched.cidade && Boolean(formik.errors.cidade)}
-                        helperText={formik.touched.cidade && formik.errors.cidade}                            
-                      />
-                  </Grid> 
-   
-                  <Grid item sm={12} md={3} lg={3}>
-                    <Select
-                      fullWidth
-                      label="Status"
-                      value={formik.values.situacao}
-                    >
-                      <MenuItem value={'Em Andamento'}>Em Andamento</MenuItem> 
-                      <MenuItem value={'Finalizado'}>Finalizado</MenuItem>
-                    </Select>
-                  </Grid> 
-
-                  <Grid item sm={12} md={12} lg={12}>
-                  <TextField
-                      fullWidth
-                      multiline
-                      rows={5}
-                      label="Informações da viagem"
-                      name="descricao"
-                      onChange={formik.handleChange}
-                      value={formik.values.descricao ? formik.values.descricao : '' } 
-                      error={Boolean(formik.touched.descricao && formik.errors.descricao)}
-                      helperText={formik.touched.descricao && formik.errors.descricao}
-                    />
-                  </Grid> 
-                           
-                </Grid>
-              </form>        
-            </DialogContent>
-            <DialogActions disableSpacing>
-              <Button onClick={handleCancel}>
-                Cancelar
-              </Button>
-              <Button onClick={handleOk}>Ok</Button>
-            </DialogActions>
-          </Dialog>
-    );
-  };
-
-
-  const handleClose = (newValue) => {
+  const handleClose = () => {
     setOpenPlanejamento(false);
-
-    if (newValue) {
-      setValue(newValue);
-    }
+    handleAtualizarCards();
   };
 
-  const handleCloseDescricao = (newValue) => {
+  const handleCloseDescricao = () => {
     setOpenDescricao(false);
   };
 
-  const handleCloseChat = (newValue) => {
+  const handleCloseChat = () => {
     setOpenChat(false);
   };
 
 
   return (
-    // <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
     <>    
       <CustomLoad openLoad={isLoad} />
       <Grid item xs={12} sm={6} md={6} lg={4}>
@@ -437,20 +310,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
               }),
             }}
           >
-            {/* <SvgIconStyle
-              color="paper"
-              src="/static/icons/shape-avatar.svg"
-              sx={{
-                width: 80,
-                height: 36,
-                zIndex: 9,
-                bottom: -15,
-                position: 'absolute',
-                color: 'background.paper',
-                ...((latestPostLarge || latestPost) && { display: 'none' }), 
-              }}
-            /> */}
-
             {situacao && (
               <Label
                 variant="filled"
@@ -513,8 +372,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
             }}
           >
             <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-              {/* {fDate(createdAt)} */}
-              {/* {createdAt} */}
               {fDate2(data_plan)}
             </Typography>         
 
@@ -523,7 +380,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
               color="inherit"
               variant="subtitle2"
               underline="hover"
-              //component={RouterLink}
               sx={{
                 ...(latestPostLarge && { typography: 'h5', height: 60 }),
                 ...((latestPostLarge || latestPost) && {
@@ -557,7 +413,6 @@ export default function PlanejarViagemCard({ planejamento, index }) {
               Descrição
             </ColorButton>
 
-
             &nbsp;
             <ColorButton 
               variant="contained" 
@@ -576,9 +431,11 @@ export default function PlanejarViagemCard({ planejamento, index }) {
           </CardContent>
         </CardAdapt>
 
-        <DialogCustom
+        <DialogPlanejamento
           open={openPlanejamento}
-          onClose={handleClose}
+          handleClose={handleClose}
+          planejamento={planejamento}
+          handleAtualizarCards={handleAtualizarCards}
         />
 
         <DialogDescricao

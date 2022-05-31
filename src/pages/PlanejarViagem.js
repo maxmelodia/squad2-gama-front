@@ -7,15 +7,21 @@ import { PlanejarViagemCard } from '../sections/@dashboard/planejar-viagem';
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
 import CustomLoad from '../components/CustomLoad';
+import { ConsoleLogger } from '@aws-amplify/core';
 
 export default function PlanejarViagem() {
   const { dataUser } = useContext(UserContext);
   const [planejamentos, setPlanejamentos] = useState([]);
   const [isLoad, setIsLoad] = useState(false);
+  const [atualizar, setAtualizar] = useState(false);
 
-  useEffect(() => {
-    pesquisar();
-  }, []);
+  useEffect( async () => {
+    await pesquisar();
+  }, [atualizar]);
+
+  const handleAtualizarCards = () => {
+    setAtualizar(!atualizar);
+  }
 
   const pesquisar = async () => {
     setIsLoad(true);
@@ -42,7 +48,11 @@ export default function PlanejarViagem() {
         </Stack>
         <Grid container spacing={3}>
           {planejamentos.map((planejamento, index) => (
-            <PlanejarViagemCard key={planejamento.id} planejamento={planejamento} index={index} />
+            <PlanejarViagemCard 
+              key={planejamento.id} 
+              planejamento={planejamento} 
+              index={index} 
+              handleAtualizarCards={handleAtualizarCards}/>
           ))}
         </Grid>
       </Container>
