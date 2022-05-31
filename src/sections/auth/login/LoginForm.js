@@ -20,6 +20,13 @@ export default function LoginForm() {
   const [open, setOpen] = useState(false);
   const [message,setMessage] = useState('');
 
+  useEffect(() => {
+    if (erro === true) {
+      showAlert('Falha na autenticação, USUÁRIO/SENHA incorreto, verifique!!!');    
+      setErro(false);
+    }
+  }, [erro]);
+
   const showAlert = (m) => {
     setMessage(m);
     setOpen(true);
@@ -34,13 +41,13 @@ export default function LoginForm() {
 
   const [showPassword, setShowPassword] = useState(false);
   const LoginSchema = Yup.object().shape({
-    email: Yup.string().required('Usuário é obrigatório'),
+    usuario: Yup.string().required('Usuário é obrigatório'),    
     password: Yup.string().required('Password é obrigatório'),
   });
 
   const formik = useFormik({
     initialValues: {
-      email: '',
+      usuario: '',
       password: '',
       remember: true,
     },
@@ -48,7 +55,7 @@ export default function LoginForm() {
     onSubmit: async (value , { setSubmitting }) => {
       setSubmitting(true);
       await Auth.signIn({
-        username: value.email,
+        username: value.usuario,
         password: value.password
       })
         .then(() => {
@@ -90,10 +97,6 @@ export default function LoginForm() {
     },
   });
 
-  useEffect(() => {
-    if (erro === true) showAlert('Falha na autenticação, servidor indisponível...');    
-  }, [erro]);
-
   const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
 
   const handleShowPassword = () => {
@@ -106,26 +109,17 @@ export default function LoginForm() {
 
   return (
       <>
-        <Stack spacing={2} sx={{ width: '100%' }}>
-          <Snackbar 
-            open={open} 
-            autoHideDuration={5000} 
-            onClose={handleCloseAlert} 
-            message={message}
-            >
-          </Snackbar>
-        </Stack>       
         <FormikProvider value={formik}>
           <Form autoComplete="off" noValidate onSubmit={handleSubmit}>
             <Stack spacing={3}>
               <TextField
                 fullWidth
                 autoComplete="username"
-                type="email"
+                type="usuario"
                 label="Usuário"
-                {...getFieldProps('email')}
-                error={Boolean(touched.email && errors.email)}
-                helperText={touched.email && errors.email}
+                {...getFieldProps('usuario')}
+                error={Boolean(touched.usuario && errors.usuario)}
+                helperText={touched.usuario && errors.usuario}
               />
 
               <TextField
@@ -157,6 +151,15 @@ export default function LoginForm() {
     
           </Form>
         </FormikProvider>
+        <Stack spacing={2} sx={{ width: '100%' }}>
+          <Snackbar 
+            open={open} 
+            autoHideDuration={5000} 
+            onClose={handleCloseAlert} 
+            message={message}
+            >
+          </Snackbar>
+        </Stack>           
       </>
   );  
 }

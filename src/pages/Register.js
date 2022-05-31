@@ -64,7 +64,7 @@ export default function Register() {
     <Page title="Register">
       <RootStyle>
         <HeaderStyle>
-          <Logo />
+          <Logo disabledLink={true}/>
           {smUp && (
             <Typography variant="body2" sx={{ mt: { md: -2 } }}>
               Já tem uma conta? {''}
