@@ -5,7 +5,6 @@ import { Container, Stack, Typography } from '@mui/material';
 import Page from '../components/Page';
 import { ConexoesList } from '../sections/@dashboard/verificar-conexoes';
 // mock
-import PRODUCTS from '../_mock/products';
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
 

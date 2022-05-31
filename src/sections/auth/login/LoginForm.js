@@ -6,7 +6,7 @@ import { Auth } from 'aws-amplify';
 import jwt_decode from "jwt-decode";
 import api from '../../../services/api';
 // material
-import { Link, Stack, Checkbox, TextField, IconButton, InputAdornment, FormControlLabel, Snackbar} from '@mui/material';
+import { Stack, TextField, IconButton, InputAdornment, Snackbar} from '@mui/material';
 
 import { LoadingButton } from '@mui/lab';
 // component
@@ -112,7 +112,6 @@ export default function LoginForm() {
             autoHideDuration={5000} 
             onClose={handleCloseAlert} 
             message={message}
-            //anchorOrigin={{ vertical:'bottom', horizontal: 'right' }}
             >
           </Snackbar>
         </Stack>       
@@ -150,14 +149,6 @@ export default function LoginForm() {
             </Stack>
 
             <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-              {/* <FormControlLabel
-                control={<Checkbox {...getFieldProps('remember')} checked={values.remember} />}
-                label="Lembrar"
-              />
-
-              <Link component={RouterLink} variant="subtitle2" to="#" underline="hover">
-                Esqueceu a senha?
-              </Link> */}
             </Stack>
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>
@@ -167,5 +158,5 @@ export default function LoginForm() {
           </Form>
         </FormikProvider>
       </>
-  );
+  );  
 }
