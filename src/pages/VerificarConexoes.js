@@ -7,6 +7,7 @@ import { ConexoesList } from '../sections/@dashboard/verificar-conexoes';
 // mock
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
+import CustomLoad from '../components/CustomLoad';
 
 // ----------------------------------------------------------------------
 
@@ -18,7 +19,7 @@ export default function VerificarConexoes() {
   const [modificado, setModificado] = useState(true);
   const [sortModel, setSortModel] = useState("-id");
   const [search, setSearch] = useState("");
-
+  const [isLoad, setIsLoad] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
 
   const [conexoes, setConexoes] = useState([]);
@@ -36,15 +37,18 @@ export default function VerificarConexoes() {
       search,
     };
 
+    setIsLoad(true);
     await api(dataUser.token)
       .get(`usuario/${dataUser.decoded.sub}/conexoes`, {
         params,
       })
       .then((response) => {
         setConexoes(response.data.result);
+        setIsLoad(false);
       })
       .catch((error) => {
         console.log(error.message); 
+        setIsLoad(false);
       });
   };
 
@@ -58,6 +62,7 @@ export default function VerificarConexoes() {
 
   return (
     <Page title="Dashboard: Products">
+      <CustomLoad openLoad={isLoad} />
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
           Conexões

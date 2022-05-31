@@ -8,6 +8,7 @@ function getTokenLocalStorage(){
 const api = function () {
  const token = getTokenLocalStorage(); 
   const req = axios.create({
+    //baseURL: `http://localhost:3000/api/v1/public`,
     baseURL: `https://qje8wp1oc0.execute-api.us-east-1.amazonaws.com/Dev`,
     headers: { Authorization: `Bearer ${token}` },
   });

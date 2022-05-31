@@ -9,6 +9,7 @@ import { LoadingButton } from '@mui/lab';
 import Iconify from '../components/Iconify';
 import DateCustom from '../components/DateCustom';
 import CustomizedSnackbars from '../components/CustomizedSnackbars';
+import CustomLoad from '../components/CustomLoad';
 
 import ImageUploading from "react-images-uploading";
 import UserContext from '../contexts/user-context';
@@ -19,6 +20,7 @@ import api from '../services/api';
 export default function Perfil() {
   const { dataUser } = useContext(UserContext);
   const [preferencia, setPreferencia] = useState([]);
+  const [isLoad, setIsLoad] = useState(false);
 
   const [images, setImages] = useState([]);
   const maxNumber = 1;
@@ -65,6 +67,7 @@ export default function Perfil() {
   const  atualizarPerfil = async (values) => {
     const usuarioUpdate = {
       id: values.id,
+      nome: values.nome,
       data_nascimento: values.data_nascimento,
       cpf: values.cpf,
       cidade: values.cidade,
@@ -81,14 +84,17 @@ export default function Perfil() {
       preferencias: values.preferencias
     };    
 
+    setIsLoad(true);
     await api(dataUser.token).put(`/usuario`, usuarioUpdate)
     .then((response) => { 
         if (dataUser.user[0].foto !== values.foto) {
           dataUser.user[0].foto = values.foto;
         };
         handleClickAlert('success','Usuário atualizado com sucesso!');
+        setIsLoad(false);
       })
     .catch((error) => {
+      setIsLoad(false);
       console.log(error);
     });  
   };
@@ -96,6 +102,7 @@ export default function Perfil() {
 
   useEffect(() => {
     (async () => {
+        setIsLoad(true);
         await api(dataUser.token).get(`/usuario/${dataUser.decoded.sub}`)
           .then(response => { 
               if (response.data.result[0].foto !== "") {
@@ -144,9 +151,11 @@ export default function Perfil() {
               });
 
               setUsuario(u[0]); 
-              formik.setValues(u[0]);            
+              formik.setValues(u[0]);  
+              setIsLoad(false);          
             })
           .catch((error) => {
+            setIsLoad(false);
             console.log(error);
           });  
     })();  
@@ -158,11 +167,14 @@ export default function Perfil() {
           lookup: true,
           orderBy: 'grupo'
         };
+        setIsLoad(true); 
         await api(dataUser.token).get(`/preferencia`, {params})
           .then(response => { 
               setPreferencia(response.data.result.data);
+              setIsLoad(false);
             })
           .catch((error) => {
+            setIsLoad(false);
             console.log(error);
           });  
     })();  
@@ -185,6 +197,7 @@ export default function Perfil() {
 
   return (
     <FormikProvider value={formik}>
+      <CustomLoad openLoad={isLoad} />
       <CustomizedSnackbars
         open={open}
         openAlert={true}

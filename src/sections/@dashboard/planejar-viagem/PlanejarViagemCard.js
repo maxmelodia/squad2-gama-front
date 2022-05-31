@@ -19,6 +19,7 @@ import * as Yup from 'yup';
 import api from '../../../services/api';
 import UserContext from '../../../contexts/user-context';
 import Label from '../../../components/Label';
+import CustomLoad from '../../../components/CustomLoad';
 
 const CardAdapt = styled(Card)({
   position: 'relative',
@@ -107,6 +108,8 @@ export default function PlanejarViagemCard({ planejamento, index }) {
 
   const [ mensagens, setMensagens ] = useState(null);
 
+  const [isLoad, setIsLoad] = useState(false);
+
   const [plan, setPlan] = useState({
     id: null,
     conexao_id: null,
@@ -145,13 +148,16 @@ export default function PlanejarViagemCard({ planejamento, index }) {
   },[]);
 
   const pesquisarMensagens = async () => {
+    setIsLoad(true);
     await api(dataUser.token)
       .get(`planejamento/${id}/mensagens`)
       .then((response) => {
         setMensagens(response.data.result); 
+        setIsLoad(false);
       })
       .catch((error) => {
         console.log(error.message); 
+        setIsLoad(false);
       });
   };
 
@@ -164,14 +170,17 @@ export default function PlanejarViagemCard({ planejamento, index }) {
         mensagem: editMensagem.current.value
       };
   
+      setIsLoad(true);
       await api(dataUser.token)
         .post(`planejamento/${id}/mensagem`,body)
         .then(async () => {
           editMensagem.current.value = '';
           await pesquisarMensagens();
+          setIsLoad(false);
         })
         .catch((error) => {
           console.log(error.message); 
+          setIsLoad(false);
         });
 
     };
@@ -403,185 +412,188 @@ export default function PlanejarViagemCard({ planejamento, index }) {
 
   return (
     // <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-    <Grid item xs={12} sm={6} md={6} lg={4}>
-      <CardAdapt>
-        <CardMediaStyle
-          sx={{
-            ...((latestPostLarge || latestPost) && {
-              pt: 'calc(100% * 4 / 3)',
-              '&:after': {
-                top: 0,
-                content: "''",
-                width: '100%',
-                height: '100%',
-                position: 'absolute',
-                bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
-              },
-            }),
-            ...(latestPostLarge && {
-              pt: {
-                xs: 'calc(100% * 4 / 3)',
-                sm: 'calc(100% * 3 / 4.66)',
-              },
-            }),
-          }}
-        >
-          {/* <SvgIconStyle
-            color="paper"
-            src="/static/icons/shape-avatar.svg"
+    <>    
+      <CustomLoad openLoad={isLoad} />
+      <Grid item xs={12} sm={6} md={6} lg={4}>
+        <CardAdapt>
+          <CardMediaStyle
             sx={{
-              width: 80,
-              height: 36,
-              zIndex: 9,
-              bottom: -15,
-              position: 'absolute',
-              color: 'background.paper',
-              ...((latestPostLarge || latestPost) && { display: 'none' }), 
-            }}
-          /> */}
-
-          {situacao && (
-            <Label
-              variant="filled"
-              color={(situacao === 'Em Andamento' && 'info') || (situacao === 'Finalizado' && 'success') || '' }
-              sx={{
-                zIndex: 9,
-                top: 16,
-                right: 16,
-                position: 'absolute',
-                textTransform: 'uppercase',
-              }} 
-            >
-              {situacao}
-            </Label>
-          )}          
-
-          <Tooltip title={conexao.usuario_publicou.nome}>
-            <AvatarStyle
-              alt={conexao.usuario_publicou.nome}
-              src={conexao.usuario_publicou.foto}
-              sx={{
-                ...((latestPostLarge || latestPost) && {
-                  zIndex: 9,
-                  top: 24,
-                  left: 24,
-                  width: 50,
-                  height: 50,
-                }),
-              }}
-            />
-          </Tooltip>
-
-          <Tooltip title={conexao.usuario_conectou.nome}>
-            <AvatarStyle2
-              alt={conexao.usuario_conectou.nome}
-              src={conexao.usuario_conectou.foto}
-              sx={{
-                ...((latestPostLarge || latestPost) && {
-                  zIndex: 9,
-                  top: 24,
-                  left: 80,
-                  width: 50,
-                  height: 50,
-                }),
-              }}
-            />
-          </Tooltip>
-
-          <CoverImgStyle alt={'title'} src={`/static/mock-images/cidades/cidade_${index}.jpg`} />
-        </CardMediaStyle>
-
-        <CardContent
-          sx={{
-            pt: 4,
-            ...((latestPostLarge || latestPost) && {
-              bottom: 0,
-              width: '100%',
-              position: 'absolute',
-            }),
-          }}
-        >
-          <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
-            {/* {fDate(createdAt)} */}
-            {/* {createdAt} */}
-            {fDate2(data_plan)}
-          </Typography>         
-
-          <TitleStyle
-            to="#"
-            color="inherit"
-            variant="subtitle2"
-            underline="hover"
-            //component={RouterLink}
-            sx={{
-              ...(latestPostLarge && { typography: 'h5', height: 60 }),
               ...((latestPostLarge || latestPost) && {
-                color: 'common.white',
+                pt: 'calc(100% * 4 / 3)',
+                '&:after': {
+                  top: 0,
+                  content: "''",
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                  bgcolor: (theme) => alpha(theme.palette.grey[900], 0.72),
+                },
+              }),
+              ...(latestPostLarge && {
+                pt: {
+                  xs: 'calc(100% * 4 / 3)',
+                  sm: 'calc(100% * 3 / 4.66)',
+                },
               }),
             }}
           >
-            ✨{cidade}
-          </TitleStyle>
+            {/* <SvgIconStyle
+              color="paper"
+              src="/static/icons/shape-avatar.svg"
+              sx={{
+                width: 80,
+                height: 36,
+                zIndex: 9,
+                bottom: -15,
+                position: 'absolute',
+                color: 'background.paper',
+                ...((latestPostLarge || latestPost) && { display: 'none' }), 
+              }}
+            /> */}
 
-          <Divider/>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} sx={{mb:3, mt:2}}>
+            {situacao && (
+              <Label
+                variant="filled"
+                color={(situacao === 'Em Andamento' && 'info') || (situacao === 'Finalizado' && 'success') || '' }
+                sx={{
+                  zIndex: 9,
+                  top: 16,
+                  right: 16,
+                  position: 'absolute',
+                  textTransform: 'uppercase',
+                }} 
+              >
+                {situacao}
+              </Label>
+            )}          
 
-          <ColorButton 
-            variant="contained" 
-            size="small" 
-            startIcon={<Iconify icon="carbon:airline-digital-gate" />}
-            onClick={() => setOpenPlanejamento(true)} 
+            <Tooltip title={conexao.usuario_publicou.nome}>
+              <AvatarStyle
+                alt={conexao.usuario_publicou.nome}
+                src={conexao.usuario_publicou.foto}
+                sx={{
+                  ...((latestPostLarge || latestPost) && {
+                    zIndex: 9,
+                    top: 24,
+                    left: 24,
+                    width: 50,
+                    height: 50,
+                  }),
+                }}
+              />
+            </Tooltip>
+
+            <Tooltip title={conexao.usuario_conectou.nome}>
+              <AvatarStyle2
+                alt={conexao.usuario_conectou.nome}
+                src={conexao.usuario_conectou.foto}
+                sx={{
+                  ...((latestPostLarge || latestPost) && {
+                    zIndex: 9,
+                    top: 24,
+                    left: 80,
+                    width: 50,
+                    height: 50,
+                  }),
+                }}
+              />
+            </Tooltip>
+
+            <CoverImgStyle alt={'title'} src={`/static/mock-images/cidades/cidade_${index}.jpg`} />
+          </CardMediaStyle>
+
+          <CardContent
+            sx={{
+              pt: 4,
+              ...((latestPostLarge || latestPost) && {
+                bottom: 0,
+                width: '100%',
+                position: 'absolute',
+              }),
+            }}
           >
-            Planejar
-          </ColorButton>
+            <Typography gutterBottom variant="caption" sx={{ color: 'text.disabled', display: 'block' }}>
+              {/* {fDate(createdAt)} */}
+              {/* {createdAt} */}
+              {fDate2(data_plan)}
+            </Typography>         
 
-
-          &nbsp;
-          <ColorButton 
-            variant="contained" 
-            size="small" 
-            startIcon={<Iconify icon="icon-park-outline:view-grid-detail" />}
-            onClick={() => setOpenDescricao(true)} 
+            <TitleStyle
+              to="#"
+              color="inherit"
+              variant="subtitle2"
+              underline="hover"
+              //component={RouterLink}
+              sx={{
+                ...(latestPostLarge && { typography: 'h5', height: 60 }),
+                ...((latestPostLarge || latestPost) && {
+                  color: 'common.white',
+                }),
+              }}
             >
-            Descrição
-          </ColorButton>
+              ✨{cidade}
+            </TitleStyle>
 
+            <Divider/>
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} sx={{mb:3, mt:2}}>
 
-          &nbsp;
-          <ColorButton 
-            variant="contained" 
-            size="small" 
-            startIcon={<Iconify icon="icon-park-outline:wechat" />}
-            onClick={async () => {
-              await pesquisarMensagens();
-              setOpenChat(true)
-            }} 
+            <ColorButton 
+              variant="contained" 
+              size="small" 
+              startIcon={<Iconify icon="carbon:airline-digital-gate" />}
+              onClick={() => setOpenPlanejamento(true)} 
             >
-              Chat
-          </ColorButton>
-          </Stack>
+              Planejar
+            </ColorButton>
 
-          
-        </CardContent>
-      </CardAdapt>
 
-      <DialogCustom
-        open={openPlanejamento}
-        onClose={handleClose}
-      />
+            &nbsp;
+            <ColorButton 
+              variant="contained" 
+              size="small" 
+              startIcon={<Iconify icon="icon-park-outline:view-grid-detail" />}
+              onClick={() => setOpenDescricao(true)} 
+              >
+              Descrição
+            </ColorButton>
 
-      <DialogDescricao
-        open={openDescricao}
-        onClose={handleCloseDescricao}
-      />
 
-      <DialogChat
-        open={openChat}
-        onClose={handleCloseChat}
-        contentMensagem={mensagens}        
-      />
+            &nbsp;
+            <ColorButton 
+              variant="contained" 
+              size="small" 
+              startIcon={<Iconify icon="icon-park-outline:wechat" />}
+              onClick={async () => {
+                await pesquisarMensagens();
+                setOpenChat(true)
+              }} 
+              >
+                Chat
+            </ColorButton>
+            </Stack>
 
-    </Grid>
+            
+          </CardContent>
+        </CardAdapt>
+
+        <DialogCustom
+          open={openPlanejamento}
+          onClose={handleClose}
+        />
+
+        <DialogDescricao
+          open={openDescricao}
+          onClose={handleCloseDescricao}
+        />
+
+        <DialogChat
+          open={openChat}
+          onClose={handleCloseChat}
+          contentMensagem={mensagens}        
+        />
+
+      </Grid>
+    </>
   );
 
 }

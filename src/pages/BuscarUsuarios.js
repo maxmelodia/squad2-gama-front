@@ -20,6 +20,7 @@ import { styled } from '@mui/material/styles';
 import { Rating, Toolbar, Tooltip, IconButton, OutlinedInput, InputAdornment } from '@mui/material';
 
 import Iconify from '../components/Iconify';
+import CustomLoad from '../components/CustomLoad';
 
 function calculateAge(dobString) {
   var dob = new Date(dobString);
@@ -61,6 +62,7 @@ export default function BuscarUsuarios() {
   const [modificado, setModificado] = useState(true);
   const [sortModel, setSortModel] = useState("nome");
   const [search, setSearch] = useState("");
+  const [isLoad, setIsLoad] = useState(false);
 
   const columns = [
     { field: 'rating', headerName: '',
@@ -140,6 +142,7 @@ export default function BuscarUsuarios() {
       search,
     };
 
+    setIsLoad(true);
     api(dataUser.token)
       .get('/usuario', {
         params,
@@ -168,8 +171,10 @@ export default function BuscarUsuarios() {
         });
         setDataRows(u);
         setTotalCount(response.data.result.totalCount);
+        setIsLoad(false);
       })
       .catch((error) => {
+        setIsLoad(false);
         console.log(error.message);
       });
   };
@@ -197,6 +202,7 @@ export default function BuscarUsuarios() {
 
   return (
     <Page title="Buscar Viajantes">
+      <CustomLoad openLoad={isLoad} />
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
