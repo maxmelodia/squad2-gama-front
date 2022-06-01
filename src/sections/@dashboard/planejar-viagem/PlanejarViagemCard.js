@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Card, Grid, Avatar, Typography, CardContent, Button, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, 
-  TextField, Stack, Divider} from '@mui/material';
+  TextField,Stack, Divider, Rating} from '@mui/material';
+
+
 
 // utils
 import { fDate2, fDateTime2 } from '../../../utils/formatTime';
@@ -90,7 +92,11 @@ PlanejarViagemCard.propTypes = {
 export default function PlanejarViagemCard({ planejamento, index, handleAtualizarCards }) {
   const { dataUser } = useContext(UserContext);
   const editMensagem = useRef();
-  const { id, conexao_id, data_plan = null, cidade = '', descricao = '', situacao, conexao,      cover, title, view, comment, share, author, createdAt } = planejamento;
+  const editAvaliacao = useRef(null);
+
+  const { id, conexao_id, data_plan = null, cidade = '', descricao = '', situacao, conexao, avaliacao, cover, title, view, comment, share, author, createdAt } = planejamento;
+
+  //console.log(avaliacao);
 
   // const latestPostLarge = index === 0;
   // const latestPost = index === 1 || index === 2;
@@ -101,6 +107,8 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
   const [ openPlanejamento, setOpenPlanejamento ] = useState(false);
   const [ openDescricao, setOpenDescricao ] = useState(false);
   const [ openChat, setOpenChat ] = useState(false);
+  const [ openAvaliacao, setOpenAvaliacao ] = useState(false);
+  const [ nota, setNota ] = useState(3);
 
   const [ mensagens, setMensagens ] = useState(null);
 
@@ -143,8 +151,29 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
         });
 
     };
-
   };  
+
+  const avaliarUsuario = async () => {
+      const body = {
+        planejamento_id: id,
+        usuario_id: conexao.usuario_conectou.id,
+        data_hora: new Date(),
+        nota: nota,
+        //mensagem: editAvaliacao.current.value
+      };
+  
+      setIsLoad(true);
+      await api(dataUser.token)
+        .post(`planejamento/${id}/avaliacao`,body)
+        .then(async () => {
+          setIsLoad(false);
+        })
+        .catch((error) => {
+          console.log(error.message); 
+          setIsLoad(false);
+        });
+  };  
+
 
   const DialogChat = (props) => {
     const { contentMensagem, onClose, open, ...other } = props;
@@ -270,6 +299,57 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
     );
   };
 
+  const DialogAvaliacao = (props) => {
+    const { avaliacao, onClose, open, ...other } = props;
+    const handleOk = () => {
+      avaliarUsuario();
+      onClose();
+    };    
+
+    return (
+          <Dialog
+            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 400 } }}
+            maxWidth="sm"
+            open={open}
+            {...other}
+          >
+            <DialogTitle>Avalie seu parceiro de viagem...
+            </DialogTitle>
+            
+            <DialogContent dividers>
+                <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} mb={2}> 
+                  <Avatar
+                    src={conexao.usuario_conectou.foto}
+                    sx={{ width: 120, height: 120 }}
+                  />
+                 <Rating 
+                    size="large"  
+                    name="simple-controlled" 
+                    value={nota} 
+                    onChange={(event, newValue) => {
+                      setNota(newValue);
+                    }}                    
+                    />
+                 </Stack>               
+
+                 {/* <TextField
+                  fullWidth
+                  multiline
+                  rows={5}
+                  label="Mensagem"
+                  name="descricao"
+                  inputRef={editAvaliacao}
+                />                  */}
+
+            </DialogContent>
+            <DialogActions disableSpacing>
+            <Button onClick={handleOk}>Ok</Button>
+            <Button onClick={() => onClose('cancelar')}>Cancelar</Button>
+            </DialogActions>
+          </Dialog>
+    );
+  };
+
   const handleClose = () => {
     setOpenPlanejamento(false);
     handleAtualizarCards();
@@ -283,6 +363,11 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
     setOpenChat(false);
   };
 
+  const handleCloseAvaliacao = (action = '') => {
+    setOpenAvaliacao(false);
+    if (action !== 'cancelar')
+    handleAtualizarCards();
+  };
 
   return (
     <>    
@@ -391,8 +476,9 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
             </TitleStyle>
 
             <Divider/>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1} sx={{mb:3, mt:2}}>
+            <Stack direction="row" alignItems="center" justifyContent="flex-start" mb={1} sx={{mb:3, mt:2}}>
 
+            {situacao !== 'Finalizado' &&
             <ColorButton 
               variant="contained" 
               size="small" 
@@ -400,7 +486,7 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
               onClick={() => setOpenPlanejamento(true)} 
             >
               Planejar
-            </ColorButton>
+            </ColorButton>}
 
 
             &nbsp;
@@ -414,6 +500,7 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
             </ColorButton>
 
             &nbsp;
+            {situacao !== 'Finalizado' &&
             <ColorButton 
               variant="contained" 
               size="small" 
@@ -424,7 +511,18 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
               }} 
               >
                 Chat
-            </ColorButton>
+            </ColorButton>}
+
+            &nbsp;
+            {situacao === 'Finalizado' &&
+            <ColorButton 
+              variant="contained" 
+              size="small" 
+              startIcon={<Iconify icon=":ant-design:star-outlined" />}
+              onClick={async () => setOpenAvaliacao(true)} 
+              >
+                Avaliação
+            </ColorButton>}            
             </Stack>
 
             
@@ -448,6 +546,12 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
           onClose={handleCloseChat}
           contentMensagem={mensagens}        
         />
+
+        <DialogAvaliacao
+          open={openAvaliacao}
+          onClose={handleCloseAvaliacao}
+          avaliacao={avaliacao}
+        />        
 
       </Grid>
     </>

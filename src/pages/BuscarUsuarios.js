@@ -74,7 +74,7 @@ export default function BuscarUsuarios() {
       sortable: false,      
       renderCell: (params)=>{
       return (
-        <Rating size="small" name="readOnly" value={randomIntFromInterval(3,5)} readOnly  />
+        <Rating size="small" name="readOnly" value={params.row.rate} readOnly  />
       )
     } },   
 
@@ -148,7 +148,7 @@ export default function BuscarUsuarios() {
         params,
       })
       .then((response) => {
-        const u = response.data.result.data.filter((d) => {
+        let u = response.data.result.data.filter((d) => {
           let conexao = true;
           if (d.conexoes_recebidas.length > 0) {
             const fil = d.conexoes_recebidas.filter((d) => {return d.status !== 'Finalizado'});
@@ -169,6 +169,16 @@ export default function BuscarUsuarios() {
 
           return (d.sub !== dataUser.decoded.sub && conexao); 
         });
+
+        u = u.map((d) => {
+            let rate = 0;
+            if (d.avaliacao.length > 0)
+               rate = d.avaliacao.reduce((acumulador, value) =>  acumulador + parseFloat(value.nota), 0)/d.avaliacao.length;
+            d.rate = rate;
+            return d;
+          }
+        )
+        
         setDataRows(u);
         setTotalCount(response.data.result.totalCount);
         setIsLoad(false);

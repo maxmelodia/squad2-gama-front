@@ -61,7 +61,16 @@ export default function DialogPlanejamento({handleClose, open, planejamento}) {
         setIsLoad(true);
         await api(dataUser.token)
         .put(`planejamento`, data)
-        .then((response) => {
+        .then(async () => {
+            
+            if (planejamento.situacao === 'Finalizado') {
+              const dataConexao = {
+                id: planejamento.conexao_id,
+                status: 'Finalizado'
+              };
+              await api(dataUser.token).put('/conexao', dataConexao)
+            } 
+
             setIsLoad(false);
         })
         .catch((error) => {
