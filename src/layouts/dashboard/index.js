@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import DashboardNavbar from './DashboardNavbar';
 import DashboardSidebar from './DashboardSidebar';
 import UserContext from '../../contexts/user-context';
+import PaginaInicial from '../../pages/PaginaInicial';
 //import api from '../../services/api';
 // ----------------------------------------------------------------------
 
@@ -67,6 +68,7 @@ export default function DashboardLayout() {
           <DashboardNavbar onOpenSidebar={() => setOpen(true)} conexoesEmAberto={conexoesEmAberto} />
           <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
           <MainStyle>
+            {/* <PaginaInicial/> */}
             <Outlet />
           </MainStyle>
         </RootStyle>

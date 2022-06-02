@@ -73,7 +73,7 @@ export default function LoginForm() {
                 setSubmitting(true);
                 squad2User.user = response.data.result;
                 localStorage.setItem('squad2User', JSON.stringify(squad2User));
-                navigate('/dashboard', { replace: true });
+                navigate('/dashboard/app', { replace: true });
               })
               .catch((error) => {
                 console.log(error.message, erro);
