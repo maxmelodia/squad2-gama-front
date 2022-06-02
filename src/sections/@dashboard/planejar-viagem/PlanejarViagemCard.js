@@ -156,7 +156,7 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
   const avaliarUsuario = async () => {
       const body = {
         planejamento_id: id,
-        usuario_id: conexao.usuario_conectou.id,
+        usuario_id: conexao.usuario_publicou_id !== dataUser.user[0].id ? conexao.usuario_publicou.id : conexao.usuario_conectou.id,
         data_hora: new Date(),
         nota: nota,
         //mensagem: editAvaliacao.current.value
@@ -319,12 +319,13 @@ export default function PlanejarViagemCard({ planejamento, index, handleAtualiza
             <DialogContent dividers>
                 <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={2} mb={2}> 
                   <Avatar
-                    src={conexao.usuario_conectou.foto}
+                    src={conexao.usuario_publicou_id !== dataUser.user[0].id ? conexao.usuario_publicou.foto : conexao.usuario_conectou.foto}
                     sx={{ width: 120, height: 120 }}
                   />
                  <Rating 
                     size="large"  
                     name="simple-controlled" 
+                    precision={0.5}
                     value={nota} 
                     onChange={(event, newValue) => {
                       setNota(newValue);

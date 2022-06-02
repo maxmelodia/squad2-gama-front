@@ -74,7 +74,7 @@ export default function BuscarUsuarios() {
       sortable: false,      
       renderCell: (params)=>{
       return (
-        <Rating size="small" name="readOnly" value={params.row.rate} readOnly  />
+        <Rating precision={0.5} size="small" name="readOnly" value={params.row.rate} readOnly  />
       )
     } },   
 
