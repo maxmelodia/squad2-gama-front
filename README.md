@@ -26,6 +26,10 @@
   <img width="600" src=".github/arch.png" alt="Arquitetura do projeto"/>
 </p>
 
+## 🎫 Swagger do Projeto
+- [Veller Swagger](http://api.squad2.tech:3000/api-docs/)
+
+
 ## 🧪 Tecnologias
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
