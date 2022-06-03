@@ -66,8 +66,11 @@ O app estará disponível no seu browser pelo endereço http://localhost:3000.
 
 Colaboradores: 
 
-[<img loading="lazy" alt="maxmelodia" src="https://github.com/maxmelodia.png?size=70" width="35" height="35">](https://github.com/maxmelodia) [<img loading="lazy" alt="Arimayara" src="https://github.com/Arimayara.png?size=70" width="35" height="35">](https://github.com/Arimayara)
+[<img loading="lazy" alt="maxmelodia" src="https://github.com/maxmelodia.png?size=70" width="40" height="40">](https://github.com/maxmelodia) [![Github Badge](https://img.shields.io/badge/-Github-000?style=flat-square&logo=Github&logoColor=white&link=https://github.com/maxmelodia)](https://github.com/maxmelodia) [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/maxwell-roberto/)](https://www.linkedin.com/in/maxwell-roberto/)
 
+[<img loading="lazy" alt="Arimayara" src="https://github.com/Arimayara.png?size=70" width="40" height="40">](https://github.com/Arimayara) [![Github Badge](https://img.shields.io/badge/-Github-000?style=flat-square&logo=Github&logoColor=white&link=https://github.com/Arimayara)](https://github.com/Arimayara) [![Linkedin Badge](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/ariany-santos/)](https://www.linkedin.com/in/ariany-santos/)
+
+<br>
 
 ## 📝 License
 
