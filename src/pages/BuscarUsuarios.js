@@ -148,8 +148,6 @@ export default function BuscarUsuarios() {
       searchPref
     };
 
-    console.log('params',params);
-
     setIsLoad(true);
     api(dataUser.token)
       .get('/usuario', {

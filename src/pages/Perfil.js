@@ -166,10 +166,6 @@ export default function Perfil() {
                   preferencias
                 };
 
-                console.log('usuario_pref',ret.preferencias)
-                console.log('geral_pref',preferencia)
-                
-
                 return ret;
               });
 
