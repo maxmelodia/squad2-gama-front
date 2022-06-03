@@ -12,31 +12,33 @@ import {
 // components
 import Page from '../components/Page';
 import Scrollbar from '../components/Scrollbar';
-import { UserListToolbar, BuscarUsuariosMenu } from '../sections/@dashboard/user';
+import { BuscarUsuariosMenu } from '../sections/@dashboard/user';
 import { DataGrid, ptBR } from "@mui/x-data-grid";
 import api from '../services/api';
 import UserContext from '../contexts/user-context';
 import { styled } from '@mui/material/styles';
-import { Rating, Toolbar, Tooltip, IconButton, OutlinedInput, InputAdornment } from '@mui/material';
+import { Rating, OutlinedInput, InputAdornment } from '@mui/material';
 
 import Iconify from '../components/Iconify';
 import CustomLoad from '../components/CustomLoad';
 
 function calculateAge(dobString) {
-  var dob = new Date(dobString);
-  var currentDate = new Date();
-  var currentYear = currentDate.getFullYear();
-  var birthdayThisYear = new Date(dob.getDay(), dob.getMonth(), currentYear);
-  var age = currentYear - dob.getFullYear();
-
-  if (birthdayThisYear > currentDate) {   
-     age--;
-  } 
-     return age;
-
+  if (dobString) {
+    var dob = new Date(dobString);
+    var currentDate = new Date();
+    var currentYear = currentDate.getFullYear();
+    var birthdayThisYear = new Date(dob.getDay(), dob.getMonth(), currentYear);
+    var age = currentYear - dob.getFullYear();
+  
+    if (birthdayThisYear > currentDate) {   
+       age--;
+    } 
+       return age;
+  }
 }
 
 const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
+  margin:10,
   width: 240,
   transition: theme.transitions.create(['box-shadow', 'width'], {
     easing: theme.transitions.easing.easeInOut,
@@ -62,6 +64,8 @@ export default function BuscarUsuarios() {
   const [modificado, setModificado] = useState(true);
   const [sortModel, setSortModel] = useState("nome");
   const [search, setSearch] = useState("");
+  const [searchDestino, setSearchDestino] = useState("");
+  const [searchPref, setSearchPref] = useState("");
   const [isLoad, setIsLoad] = useState(false);
 
   const columns = [
@@ -132,7 +136,7 @@ export default function BuscarUsuarios() {
 
   useEffect(() => {
     pesquisar();
-  }, [modificado, page, sortModel, pageSize, search]);
+  }, [modificado, page, sortModel, pageSize, search, searchDestino, searchPref]);
 
   const pesquisar = () => {
     let params = {
@@ -140,7 +144,11 @@ export default function BuscarUsuarios() {
       page: page + 1,
       orderBy: sortModel,
       search,
+      searchDestino,
+      searchPref
     };
+
+    console.log('params',params);
 
     setIsLoad(true);
     api(dataUser.token)
@@ -232,6 +240,26 @@ export default function BuscarUsuarios() {
             </InputAdornment>
           }
         /> 
+        <SearchStyle
+          //value={search}
+          onChange={(event) => setSearchDestino(event.target.value)}
+          placeholder="Buscar Destino..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+            </InputAdornment>
+          }
+        />         
+        <SearchStyle
+          //value={search}
+          onChange={(event) => setSearchPref(event.target.value)}
+          placeholder="Buscar Preferência..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+            </InputAdornment>
+          }
+        />         
 
           {/* <UserListToolbar numSelected={selected.length} filterName={filterName} /> */}
 

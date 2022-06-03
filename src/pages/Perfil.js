@@ -14,6 +14,7 @@ import CustomLoad from '../components/CustomLoad';
 import ImageUploading from "react-images-uploading";
 import UserContext from '../contexts/user-context';
 import api from '../services/api';
+import InputMask from "react-input-mask";
 
 // ----------------------------------------------------------------------
 
@@ -99,13 +100,31 @@ export default function Perfil() {
     });  
   };
 
+  useEffect(() => {
+    (async () => {
+        const params = {
+          lookup: true,
+          orderBy: 'grupo'
+        };
+        setIsLoad(true); 
+        await api(dataUser.token).get(`/preferencia`, {params})
+          .then(response => { 
+              setPreferencia(response.data.result.data);
+              setIsLoad(false);
+            })
+          .catch((error) => {
+            setIsLoad(false);
+            console.log(error);
+          });  
+    })();  
+  }, []);
 
   useEffect(() => {
     (async () => {
         setIsLoad(true);
         await api(dataUser.token).get(`/usuario/${dataUser.decoded.sub}`)
           .then(response => { 
-              if (response.data.result[0].foto !== "") {
+            if (response.data.result[0].fotore && sponse.data.result[0].foto !== "") {
                 setImages([{data_url: response.data.result[0].foto}]);
               }
 
@@ -131,21 +150,25 @@ export default function Perfil() {
 
                 const ret = {
                   id: value.id,
-                  nome: value.nome, 
+                  nome: value.nome || '', 
                   email: value.email,
                   data_nascimento: value.data_nascimento,
-                  cpf: value.cpf,
-                  cidade: value.cidade,
+                  cpf: value.cpf || '',
+                  cidade: value.cidade || '',
                   foto: value.foto,
-                  telefone: value.telefone,
-                  descricao: value.descricao,
+                  telefone: value.telefone || '',
+                  descricao: value.descricao || '',
                   destino_id: destino_id,
-                  descricao_destino: descricao, 
+                  descricao_destino: descricao || '', 
                   data_partida: data_partida,
                   data_retorno: data_retorno,
-                  cidade_destino: cidade, 
+                  cidade_destino: cidade || '', 
                   preferencias
                 };
+
+                console.log('usuario_pref',ret.preferencias)
+                console.log('geral_pref',preferencia)
+                
 
                 return ret;
               });
@@ -161,25 +184,6 @@ export default function Perfil() {
     })();  
   }, []);
   
-  useEffect(() => {
-    (async () => {
-        const params = {
-          lookup: true,
-          orderBy: 'grupo'
-        };
-        setIsLoad(true); 
-        await api(dataUser.token).get(`/preferencia`, {params})
-          .then(response => { 
-              setPreferencia(response.data.result.data);
-              setIsLoad(false);
-            })
-          .catch((error) => {
-            setIsLoad(false);
-            console.log(error);
-          });  
-    })();  
-  }, []);
-
   const [open, setOpen] = useState(false);
   const [severity,setSeverity] = useState('success');
   const [message,setMessage] = useState('');
@@ -328,29 +332,44 @@ export default function Perfil() {
           </Grid>
 
           <Grid item sm={12} md={42} lg={2}>
-            <TextField
-              fullWidth
-              label="CPF"
-              {...getFieldProps('cpf')}
-              error={Boolean(touched.cpf && errors.cpf)}
-              helperText={touched.cpf && errors.cpf}
-            />
+            <InputMask
+                mask={"999.999.999-99"}
+                maskChar=" "
+                {...getFieldProps('cpf')}                   
+            >
+            {() => <TextField
+                label="CPF"
+                name="cpf"
+                fullWidth
+                error={Boolean(touched.cpf && errors.cpf)}
+                helperText={touched.cpf && errors.cpf}
+            /> }
+            </InputMask>   
           </Grid> 
 
           <Grid item sm={12} md={2} lg={2}>
-            <TextField
-              fullWidth
-              label="Telefone"
-              {...getFieldProps('telefone')}
-              error={Boolean(touched.telefone && errors.telefone)}
-              helperText={touched.telefone && errors.telefone}
-            />
+              <InputMask
+                mask={"(99)99999-9999"}
+                maskChar=""
+                {...getFieldProps('telefone')}
+              >
+                {() => (
+                  <TextField
+                    label="Telefone"
+                    id="telefone"
+                    name="telefone"
+                    fullWidth
+                    error={Boolean(touched.telefone && errors.telefone)}
+                    helperText={touched.telefone && errors.telefone}
+                  />
+                )}
+              </InputMask>
           </Grid>         
 
           <Grid item sm={12} md={4} lg={4}>
             <TextField
               fullWidth
-              label="Cidade"
+              label="Cidade/Residência"
               {...getFieldProps('cidade')}
               error={Boolean(touched.cidade && errors.cidade)}
               helperText={touched.cidade && errors.cidade}
@@ -367,7 +386,7 @@ export default function Perfil() {
               helperText={touched.descricao && errors.descricao}
               {...getFieldProps('descricao')}
             />
-          </Grid>
+          </Grid> 
 
           <Divider/>
 
@@ -380,7 +399,7 @@ export default function Perfil() {
           <Grid item sm={12} md={3} lg={3}>
             <TextField
               fullWidth
-              label="Cidade"
+              label="Cidade/Local"
               {...getFieldProps('cidade_destino')}
               error={Boolean(touched.cidade_destino && errors.cidade_destino)}
               helperText={touched.cidade_destino && errors.cidade_destino}

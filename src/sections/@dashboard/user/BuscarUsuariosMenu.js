@@ -13,16 +13,18 @@ import UserContext from '../../../contexts/user-context';
 // ----------------------------------------------------------------------
 
 function calculateAge(dobString) {
-  var dob = new Date(dobString);
-  var currentDate = new Date();
-  var currentYear = currentDate.getFullYear();
-  var birthdayThisYear = new Date(dob.getDay(), dob.getMonth(), currentYear);
-  var age = currentYear - dob.getFullYear();
-
-  if (birthdayThisYear > currentDate) {   
-     age--;
-  } 
-     return age;
+  if (dobString) {
+    var dob = new Date(dobString);
+    var currentDate = new Date();
+    var currentYear = currentDate.getFullYear();
+    var birthdayThisYear = new Date(dob.getDay(), dob.getMonth(), currentYear);
+    var age = currentYear - dob.getFullYear();
+  
+    if (birthdayThisYear > currentDate) {   
+       age--;
+    } 
+       return age;
+  }
 }
 
 export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}) {
@@ -87,8 +89,8 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
  
     return (
           <Dialog
-            sx={{ '& .MuiDialog-paper': { width: '80%', maxHeight: 800 } }}
-            maxWidth="sm"
+            sx={{ '& .MuiDialog-paper': { width: '100%' } }}
+            maxWidth="md"
             open={open}
             {...other}
           >
@@ -99,8 +101,10 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
             </DialogTitle>
             
             <DialogContent dividers>
-              <Grid container spacing={2} sx={{ margin: "5px" }}>
-                  <Grid item xs={12} sm={6} md={6} lg={6}>
+              
+              <Grid container spacing={2} >
+
+                  <Grid item xs={12} sm={5} md={5} lg={5}>
                     <Stack sx={{mb:'5px'}} direction="row" alignItems="center" spacing={2}>
                     <Avatar sx={{ height: '70px', width: '70px' }} src={objPopover.foto} />
                       <Typography variant="h6" noWrap>
@@ -109,16 +113,16 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
                     </Stack> 
                   </Grid>        
 
-                  <Grid item xs={12} sm={6} md={6} lg={6}>
-                    <Typography sx={{mt:'15px'}} variant="subtitle1">
+                  <Grid item xs={12} sm={7} md={7} lg={7}>
+                    <Typography sx={{mt:'15px'}} variant="subtitle2">
                       <Iconify icon="eva:person-outline" width={20} height={20} />
                       <strong>Dados</strong>
                     </Typography>
-                    <Typography variant="subtitle1"><strong>Nome:</strong> {objPopover.nome}</Typography>
-                    <Typography variant="subtitle1"><strong>Email:</strong> {objPopover.email}</Typography>
-                    <Typography variant="subtitle1"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
-                    <Typography variant="subtitle1"><strong>CPF:</strong> {objPopover.cpf}</Typography>
-                    <Typography variant="subtitle1"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
+                    <Typography variant="subtitle2"><strong>Nome:</strong> {objPopover.nome}</Typography>
+                    <Typography variant="subtitle2"><strong>Email:</strong> {objPopover.email}</Typography>
+                    <Typography variant="subtitle2"><strong>Idade:</strong> {calculateAge(objPopover.data_nascimento)}</Typography>
+                    <Typography variant="subtitle2"><strong>CPF:</strong> {objPopover.cpf}</Typography>
+                    <Typography variant="subtitle2"><strong>Cidade:</strong> {objPopover.cidade}</Typography>
                   </Grid>
 
                   <Divider/>    
@@ -128,35 +132,36 @@ export default function BuscarUsuariosMenu({linha, handleRemoveUsuarioConectado}
                       <Iconify icon="eva:globe-2-outline" width={20} height={20} />
                       <strong>Destino</strong>
                     </Typography>
-                    <Typography sx={{mt:'10px'}} variant="subtitle1"><strong>Cidade:</strong> {objPopoverDestino?.cidade}</Typography>
-                    <Typography variant="subtitle1">
+                    <Typography sx={{mt:'10px'}} variant="subtitle2"><strong>Cidade:</strong> {objPopoverDestino?.cidade}</Typography>
+                    <Typography variant="subtitle2">
                       <strong>Data Partida:</strong> {fDate2(objPopoverDestino?.data_partida)} &nbsp;
                       <strong>Data Retorno:</strong> {fDate2(objPopoverDestino?.data_retorno)}
                     </Typography>
-                    <Typography variant="subtitle1"><strong>Descrição:</strong> {objPopoverDestino?.descricao}</Typography>
+                    <Typography variant="subtitle2"><strong>Descrição:</strong> {objPopoverDestino?.descricao}</Typography>
                   </Grid>
 
                   <Divider/>    
                         
-                  <Grid item xs={12} sm={12} md={12} lg={12}>
+                  <Grid item xs={8} sm={10} md={12} lg={12}>
                     <Typography sx={{mt:'10px'}} variant="subtitle1">
                       <Iconify icon="healthicons:ui-preferences" width={20} height={20} />
                       <strong>Preferências</strong>
                     </Typography>
 
-                    <Grid container spacing={1} sx={{ mt: "3px" }}>
+                    <Grid container sx={{ mt: "3px" }}>
                       {objPopoverPreferencias.map((d, index) => {
                         return (
                           <React.Fragment key={index}>
-                            <Grid item sm={3} md={3} lg={3} >
-                              <Typography variant="subtitle1"> {d.grupo} </Typography>                
-                              <Typography variant="subtitle1" sx={{color:'blue'}}> {d.descricao} </Typography>                
+                            <Grid item xs={3} sm={3} md={3} lg={3} >
+                              <Typography variant="subtitle2"> {d.grupo} </Typography>                
+                              <Typography variant="subtitle2" sx={{color:'blue'}}> {d.descricao} </Typography>                
                             </Grid>
                           </React.Fragment>
                         )
                       })}
                     </Grid>                
-                  </Grid>                
+                  </Grid>  
+                                
               </Grid>              
               
             </DialogContent>
