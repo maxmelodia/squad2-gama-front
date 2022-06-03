@@ -66,7 +66,7 @@ O app estará disponível no seu browser pelo endereço http://localhost:3000.
 
 Colaboradores: 
 
-[<img loading="lazy" alt="maxmelodia" src="https://github.com/maxmelodia.png?size=70" width="35" height="35">](https://github.com/maxmelodia) [<img loading="lazy" alt="estmaira" src="https://github.com/estmaira.png?size=70" width="35" height="35">](https://github.com/estmaira)
+[<img loading="lazy" alt="maxmelodia" src="https://github.com/maxmelodia.png?size=70" width="35" height="35">](https://github.com/maxmelodia) [<img loading="lazy" alt="Arimayara" src="https://github.com/Arimayara.png?size=70" width="35" height="35">](https://github.com/Arimayara)
 
 
 ## 📝 License
