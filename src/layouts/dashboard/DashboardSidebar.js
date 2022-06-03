@@ -65,9 +65,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
       <Box sx={{ mb: 2, mx: 2.5, }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            {/* <Avatar src={account.photoURL} alt="photoURL" /> */}
-            {/* <Avatar src={dataUser.user[0].foto} alt="photoURL" /> */}
-
             <Box sx={{ ml: 2 }}>
 
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
@@ -75,8 +72,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                   icon={'eva:briefcase-fill'}
                   sx={{ width: 16, height: 16, mr: 1, mt: 1 }}
                 />        
-
-                {/* {account.displayName} */}
                 {dataUser.user[0].nome}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -93,24 +88,6 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
       <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
         <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          {/* <Box
-            component="img"
-            src="/static/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
-          />
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography gutterBottom variant="h6">
-              Get more?
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
-            </Typography>
-          </Box>
-
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
-            Upgrade to Pro
-          </Button> */}
         </Stack>
       </Box>
     </Scrollbar>
