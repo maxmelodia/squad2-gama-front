@@ -1,40 +1,78 @@
-## Minimal [(Free version)](https://minimal-kit-react.vercel.app/)
+<!-- markdownlint-disable-next-line -->
+## Versão Fron-end
 
-![license](https://img.shields.io/badge/license-MIT-blue.svg)
+<p align="center">
+  <a href="https://veller.squad2.tech/" rel="noopener" target="_blank"><img width="250" src=".github/logo.png" alt="Veller logo"></a>
+</p>
 
-> Free React Admin Dashboard made with Material-UI components and React.
+<h3 align="center">Nunca mais deixe de viajar por não ter companhia</h1>
 
-![preview](public/static/preview.jpg)
+**Veller** é um aplicativo que proporciona a conexão (match) entre pessoas que não se conhecem, mas desejam viajar para determinado local, na mesma data e podem combinar de fazer a viagem juntas.
 
-| [Minimal Free](https://minimal-kit-react.vercel.app/) | [Minimal](https://material-ui.com/store/items/minimal-dashboard/) |
-| ----------------------------------------------------- | :---------------------------------------------------------------- |
-| **7** Demo pages                                      | **42+** demo pages                                                |
-| -                                                     | ✓ Multi-language                                                  |
-| -                                                     | ✓ Dark/Light Mode 🌓                                              |
-| -                                                     | ✓ [More components](https://minimals.cc/components)               |
-| -                                                     | ✓ TypeScript version                                              |
-| -                                                     | ✓ Design files (Figma & Sketch)                                   |
+- _Missão_: Melhorar a experiência de viagem dos nossos usuários através da conexão entre pessoas.
 
-## Page demo
+- _Visão_: Ser uma empresa global, que conecta viajantes do mundo todo.
 
-- [Dashboard](https://minimal-kit-react.vercel.app/dashboard/app)
-- [Users](https://minimal-kit-react.vercel.app/dashboard/user)
-- [Product](https://minimal-kit-react.vercel.app/dashboard/products)
-- [Blog](https://minimal-kit-react.vercel.app/dashboard/blog)
-- [Login](https://minimal-kit-react.vercel.app/login)
-- [Register](https://minimal-kit-react.vercel.app/register)
-- [Not Found](https://minimal-kit-react.vercel.app/404)
+- _Valores_: Paixão, Respeito e Conectividade.
 
-## Getting started
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/mui/material-ui/blob/HEAD/LICENSE)
 
-- Recommended `node js 14.x` and `npm 6+`
-- Install dependencies: `npm install` or `yarn install`
-- Start the project: `npm run start` or `yarn start`
+<br/>
 
-## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/minimal-ui-kit/minimal.free/blob/main/LICENSE.md) for more information.
+## 💻 Arquitetura do Projeto
 
-## Contact us
+<p align="center">
+  <img width="600" src=".github/arch.png" alt="Arquitetura do projeto"/>
+</p>
 
-Email Us: support@minimals.cc
+## 🧪 Tecnologias
+
+Esse projeto foi desenvolvido com as seguintes tecnologias:
+
+- [ReactJS](https://pt-br.reactjs.org/)
+- [Amplify](https://docs.amplify.aws/)
+- [Material-ui](https://mui.com)
+- [JavaScript](https://www.javascript.com/)
+- [Vercel](https://aws.amazon.com)
+
+
+## 🚀 Como executar
+
+Clone o projeto e acesse a pasta do mesmo.
+
+```bash
+$ git clone https://github.com/maxmelodia/squad2-gama-front.git
+$ cd squad2-gama-front
+```
+
+Para iniciá-lo, siga os passos abaixo:
+```bash
+# Instalar as dependências
+$ npm i
+
+# Iniciar o projeto
+$ npm start
+```
+
+O app estará disponível no seu browser pelo endereço http://localhost:3000.
+
+## 💎 Patrocinador 
+<p align="center">
+  <a href="https://www.gama.academy/" rel="noopener sponsored" target="_blank"><img height="70" width="250" src="https://assets.website-files.com/5ff79f3ebebf6b12f6b7747f/5ffe04fc6284b7e90070d985_logo-gama-academy.png" alt="octopus" title="Repeatable, reliable deployments" loading="lazy" /></a>
+</p>
+
+---
+
+Colaboradores: 
+
+[<img loading="lazy" alt="maxmelodia" src="https://github.com/maxmelodia.png?size=70" width="35" height="35">](https://github.com/maxmelodia) [<img loading="lazy" alt="estmaira" src="https://github.com/estmaira.png?size=70" width="35" height="35">](https://github.com/estmaira)
+
+
+## 📝 License
+
+Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
+
+---
+
+Feito com :orange_heart: by Veller 👋🏻 [Siga Veller](https://veller.squad2.com.br/)
