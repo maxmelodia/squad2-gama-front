@@ -289,7 +289,7 @@ export default function ConexaoCard({ conexao }) {
           <ListItemIcon>
             <Iconify color={colorIcons2} icon="eva:close-fill" width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Finalizar" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleAlterarStatus('Finalizado')}/>
+          <ListItemText primary="Agora Não" primaryTypographyProps={{ variant: 'body2' }} onClick={(e) => handleAlterarStatus('Finalizado')}/>
         </MenuItem>
       </Menu>      
 

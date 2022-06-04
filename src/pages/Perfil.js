@@ -124,7 +124,7 @@ export default function Perfil() {
         setIsLoad(true);
         await api(dataUser.token).get(`/usuario/${dataUser.decoded.sub}`)
           .then(response => { 
-            if (response.data.result[0].fotore && sponse.data.result[0].foto !== "") {
+            if (response.data.result[0].foto && response.data.result[0].foto !== "") {
                 setImages([{data_url: response.data.result[0].foto}]);
               }
 
